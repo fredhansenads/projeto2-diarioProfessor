@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }} · Diário do Professor{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>{{ config.title }}</h1><p>{{ config.description }}</p></div><a class="button primary" href="{% url 'record_create' kind %}">+ Cadastrar {{ config.singular }}</a></section>
+<section class="panel">
+<form class="search-form" method="get" role="search"><label class="sr-only" for="search">Buscar em {{ config.title }}</label><input id="search" name="q" value="{{ query }}" placeholder="Buscar em {{ config.title|lower }}…" maxlength="150" type="search"><button class="button secondary" type="submit">Buscar</button>{% if query %}<a class="subtle-link" href="{% url 'record_list' kind %}">Limpar</a>{% endif %}</form>
+{% if rows %}
+<div class="table-scroll" tabindex="0" role="region" aria-label="Lista de {{ config.title }}"><table><thead><tr>{% for field, label in config.columns %}<th scope="col">{{ label }}</th>{% endfor %}<th scope="col"><span class="sr-only">Ações</span></th></tr></thead><tbody>
+{% for row in rows %}<tr>{% for value in row.values %}<td>{{ value }}</td>{% endfor %}<td class="actions">{% if kind == 'turmas' %}<a href="{% url 'classroom_detail' row.pk %}">Abrir<span class="sr-only"> {{ row.values.0 }}</span></a>{% endif %}<a href="{% url 'record_edit' kind row.pk %}">Editar<span class="sr-only"> {{ row.values.0 }}</span></a></td></tr>{% endfor %}
+</tbody></table></div>
+<div class="pagination"><span>{{ page_obj.paginator.count }} registro{{ page_obj.paginator.count|pluralize }}</span><div>{% if page_obj.has_previous %}<a href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}<span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}">Próxima →</a>{% endif %}</div></div>
+{% else %}<div class="empty-state"><div class="empty-icon" aria-hidden="true">▤</div><h2>{% if query %}Nenhum resultado encontrado{% else %}Tudo pronto para começar{% endif %}</h2><p>{% if query %}Experimente buscar por outro termo.{% else %}Adicione seu primeiro registro de {{ config.singular }}.{% endif %}</p>{% if not query %}<a class="button secondary" href="{% url 'record_create' kind %}">Cadastrar {{ config.singular }} →</a>{% endif %}</div>{% endif %}
+</section>
+{% endblock %}
+

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Editar{% else %}Cadastrar{% endif %} {{ config.singular }} · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'record_list' kind %}">← Voltar para {{ config.title|lower }}</a>
+<section class="page-heading"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>{% if editing %}Editar{% else %}Cadastrar{% endif %} {{ config.singular }}</h1><p>{{ config.description }}</p></div></section>
+<div class="form-layout"><section class="panel form-panel"><form method="post">{% csrf_token %}{% include "includes/form_fields.html" %}<div class="form-actions"><button class="button primary" type="submit">Salvar {% if editing %}alterações{% else %}cadastro{% endif %}</button><a class="button ghost" href="{% url 'record_list' kind %}">Cancelar</a></div></form></section>
+<aside class="form-tip"><span class="eyebrow">BOM SABER</span><h2>Uma informação bem cuidada faz diferença.</h2><p>Os cadastros ficam disponíveis somente na sua conta.</p>{% if kind == 'turmas' %}<p>Antes de criar uma turma, cadastre a escola, o ano letivo e as disciplinas.</p><a href="{% url 'record_list' 'escolas' %}">Ver escolas →</a>{% elif kind == 'matriculas' %}<p>Cadastre o aluno e a turma primeiro. Em caso de transferência, altere a situação da matrícula e crie outra na nova turma.</p>{% elif kind == 'periodos' %}<p>Cadastre a escola e o ano letivo primeiro. Cada escola pode ter suas próprias datas para bimestres, trimestres ou semestres.</p>{% else %}<p>Revise os dados antes de salvar. Você poderá editar este cadastro depois.</p>{% endif %}</aside></div>
+{% endblock %}
+

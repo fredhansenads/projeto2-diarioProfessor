@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-layout"><section class="auth-story"><a class="brand" href="{% url 'login' %}"><span class="brand-icon" aria-hidden="true">d.</span><span>diário<span class="brand-subtitle">DO PROFESSOR</span></span></a><div><p class="eyebrow">CADA ALUNO, UMA TRAJETÓRIA</p><h1>Seu ensino.<br>Suas turmas.<br>Tudo mais perto.</h1><p>Um espaço para organizar a rotina e acompanhar quem faz parte dela.</p><div class="paper-art" aria-hidden="true"><span>Meu diário</span><div></div><div></div><div></div><b>Um novo começo ↗</b></div></div><small>Feito para acompanhar o seu dia a dia.</small></section><section class="auth-form-panel">{% block auth_content %}{% endblock %}</section></div>
+{% endblock %}
+

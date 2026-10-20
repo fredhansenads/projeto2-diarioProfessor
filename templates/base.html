@@ -1,0 +1,38 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#244e43">
+  <title>{% block title %}Diário do Professor{% endblock %}</title>
+  <link rel="icon" href="{% static 'diary/icon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'diary/app.css' %}">
+</head>
+<body class="{% if user.is_authenticated %}app-body{% else %}auth-body{% endif %}">
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+{% if user.is_authenticated %}
+<aside class="sidebar">
+  <a class="brand" href="{% url 'dashboard' %}"><span class="brand-icon" aria-hidden="true">d.</span><span>diário<span class="brand-subtitle">DO PROFESSOR</span></span></a>
+  <p class="nav-label">SEU ESPAÇO</p>
+  <nav aria-label="Navegação principal">
+    <a class="nav-item {% if active == 'dashboard' %}selected{% endif %}" href="{% url 'dashboard' %}" {% if active == 'dashboard' %}aria-current="page"{% endif %}><span aria-hidden="true">⌂</span> Visão geral</a>
+    {% for item in navigation %}
+    <a class="nav-item {% if active == item.key %}selected{% endif %}" href="{% url 'record_list' item.key %}" {% if active == item.key %}aria-current="page"{% endif %}>{{ item.title }}</a>
+    {% endfor %}
+  </nav>
+  <div class="sidebar-footer"><span class="avatar" aria-hidden="true">{{ user.get_username|first|upper }}</span><div><strong>{{ user.first_name|default:user.username }}</strong><small>Meu espaço de ensino</small></div></div>
+  <form action="{% url 'logout' %}" method="post" class="logout-form">{% csrf_token %}<button class="text-button" type="submit">Sair da conta ↗</button></form>
+</aside>
+{% endif %}
+<div class="main-shell">
+  {% if user.is_authenticated %}<header class="topbar"><span>Organização para ensinar melhor.</span><span class="today">{% now "d \d\e F \d\e Y" %}</span></header>{% endif %}
+  <main id="main" tabindex="-1">
+    {% if messages %}<div class="messages" role="status">{% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="page-footer">Diário do Professor <span>•</span> Um lugar para acompanhar cada trajetória.</footer>
+</div>
+</body>
+</html>
+

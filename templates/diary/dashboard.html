@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Visão geral · Diário do Professor{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">SEU DIÁRIO, ORGANIZADO</p><h1>Olá, {{ user.first_name|default:user.username }}<span class="greeting-dot">.</span></h1><p>Mais clareza sobre suas turmas. Mais espaço para ensinar.</p></div><a class="button primary" href="{% url 'record_create' 'turmas' %}">+ Nova turma</a></section>
+<div class="stats-grid">{% for stat in stats %}<a href="{% url 'record_list' stat.key %}" class="stat-card"><span>{{ stat.label }}</span><strong>{{ stat.value|stringformat:"02d" }}</strong><span class="stat-link">Ver registros ↗</span></a>{% endfor %}</div>
+<div class="dashboard-grid">
+<section class="panel classes-panel"><div class="section-heading"><div><p class="eyebrow">ACOMPANHAMENTO</p><h2>Suas turmas</h2></div><a class="subtle-link" href="{% url 'record_list' 'turmas' %}">Ver todas →</a></div>
+{% if classrooms %}<div class="class-grid">{% for classroom in classrooms %}<a class="class-card" href="{% url 'classroom_detail' classroom.pk %}"><span class="tag">{{ classroom.academic_year }} · {{ classroom.get_shift_display }}</span><h3>{{ classroom.name }}</h3><p>{{ classroom.school.name }}</p><div class="class-card-bottom"><span>{{ classroom.student_count }} aluno{{ classroom.student_count|pluralize }} com matrícula ativa</span><span aria-hidden="true">↗</span></div></a>{% endfor %}</div>
+{% else %}<div class="empty-state"><div class="empty-icon" aria-hidden="true">▤</div><h3>Seu próximo capítulo começa aqui</h3><p>Cadastre sua escola e o ano letivo.<br>Depois, crie uma turma para receber seus alunos.</p><a class="button secondary" href="{% url 'record_create' 'escolas' %}">Cadastrar minha escola →</a></div>{% endif %}
+</section>
+<aside class="panel setup-panel"><p class="eyebrow">PRIMEIROS PASSOS</p><h2>Prepare seu diário</h2><p class="muted">Uma base organizada para o seu ano.</p><ol class="setup-list">{% for step in steps %}<li><span class="step-number {% if step.done %}done{% endif %}" aria-label="{% if step.done %}Concluído{% else %}Passo {{ forloop.counter }}{% endif %}">{% if step.done %}✓{% else %}{{ forloop.counter }}{% endif %}</span><a href="{% url 'record_list' step.key %}">{{ step.title }}</a></li>{% endfor %}</ol><div class="note"><strong>No seu ritmo.</strong><p>Comece pelos cadastros. Você pode revisar as informações sempre que precisar.</p></div></aside>
+</div>
+<section class="roadmap-note"><span class="tag">EM DESENVOLVIMENTO</span><p>Chamada, conteúdos, avaliações e relatórios serão adicionados nas próximas etapas.</p></section>
+{% endblock %}
+
