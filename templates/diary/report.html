@@ -1,0 +1,41 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}Relatórios e conselho · Diário do Professor{% endblock %}
+{% block content %}
+{% if not printing or not report %}
+<div class="no-print"><section class="page-heading"><div><p class="eyebrow">DADOS PARA ACOMPANHAR E DECIDIR</p><h1>Relatórios e conselho</h1><p>Notas, frequência e pendências no mesmo recorte.</p></div></section>
+<section class="panel report-filter"><form method="get" class="filter-form">{% include "includes/form_fields.html" with form=filter_form %}<div class="filter-actions"><button class="button primary" type="submit">Consultar relatório</button><a href="{% url 'report' %}">Limpar filtros</a></div></form>
+<p class="muted">Escolha turma e período. Disciplina e aluno são opcionais. Escola e ano permitem conferir o recorte. Ao trocar de turma, limpe os filtros anteriores se forem incompatíveis.</p></section></div>
+{% endif %}
+{% if report %}
+<div class="toolbar classroom-toolbar no-print"><a class="button secondary" href="?{{ report_query }}&format=pdf">Baixar PDF</a><a class="button secondary" href="?{{ report_query }}&format=csv">Baixar CSV</a>{% if printing %}<button class="button primary" id="print-report" type="button">Imprimir agora</button><a class="button ghost" href="?{{ report_query }}">Voltar aos filtros</a>{% else %}<a class="button secondary" href="?{{ report_query }}&format=print">Versão para impressão</a>{% endif %}</div>
+<div class="report-document {% if report.enrollment %}individual-report{% endif %}">
+<section class="panel report-intro"><p class="eyebrow">{{ report.classroom.school }} · {{ report.classroom.academic_year }}</p>
+<h2>{% if report.enrollment %}Ficha individual · {{ report.enrollment.student }}{% else %}Conselho de classe · {{ report.classroom.name }}{% endif %}</h2>
+<p>{{ report.classroom.name }} · {{ report.term.name }} · {{ report.term.start_date|date:"d/m/Y" }} a {{ report.term.end_date|date:"d/m/Y" }}</p>
+<p class="muted">Professor: {{ report.teacher }} · Emitido em {{ report.generated_at|date:"d/m/Y H:i:s" }} · {{ report.student_count }} aluno{{ report.student_count|pluralize }}</p>
+<p class="notice">Frequência considera somente aulas com chamada. Pendências não são presenças; faltas justificadas integram o total de faltas. Base parcial não é resultado final. As referências de notas não determinam aprovação oficial.</p>
+{% if report.missing_dates %}<p class="notice warning">Há matrículas com datas pendentes. Revise os vínculos antes de utilizar o relatório.</p>{% endif %}
+</section>
+{% for group in report.groups %}
+<section class="panel section-gap report-subject"><h2>{{ group.subject }}</h2>
+{% if group.book %}<p class="muted">{{ group.book.get_calculation_display }} · Escala {{ group.book.scale }} · Referência {{ group.book.minimum }} · {{ group.book.get_rounding_display }} ({{ group.book.precision }} casas) · Recuperação: {{ group.book.get_recovery_display }}</p>{% if not group.points_ready %}<p class="notice warning">Planejamento de pontos incompleto: {{ group.planned }} de {{ group.book.scale }}.</p>{% endif %}{% else %}<p class="notice">Sem caderno de notas configurado para esta disciplina e período.</p>{% endif %}
+<h3>Desempenho</h3><div class="table-scroll" tabindex="0" role="region" aria-label="Notas de {{ group.subject }}"><table><thead><tr><th>Aluno</th><th>Base / parcial</th><th>Recuperação</th><th>Resultado</th><th>Notas pendentes</th><th>Não entregues</th><th>Dispensas</th><th>Situação</th></tr></thead><tbody>
+{% for row in group.rows %}<tr><td><a href="?{{ row.individual_query }}">{{ row.enrollment.student }}</a><small class="cell-subtitle">{{ row.enrollment.get_status_display }}</small></td><td>{{ row.grade.original|default_if_none:"—" }}</td><td>{{ row.grade.recovery|default_if_none:"—" }}</td><td><strong>{{ row.grade.final|default_if_none:"—" }}</strong></td><td>{{ row.grade.pending|default_if_none:"—" }}</td><td>{{ row.grade.missing|default_if_none:"—" }}</td><td>{{ row.grade.exempt|default_if_none:"—" }}</td><td>{{ row.status }}</td></tr>
+{% empty %}<tr><td colspan="8">Nenhum aluno com vínculo ou registros neste período.</td></tr>{% endfor %}</tbody></table></div>
+<h3 class="section-gap">Frequência</h3><div class="table-scroll" tabindex="0" role="region" aria-label="Frequência de {{ group.subject }}"><table><thead><tr><th>Aluno</th><th>Aulas no vínculo</th><th>Com chamada</th><th>Presenças</th><th>Faltas</th><th>Justificadas</th><th>Chamada pendente</th><th>Frequência registrada</th></tr></thead><tbody>
+{% for row in group.rows %}<tr><td>{{ row.enrollment.student }}</td><td>{{ row.frequency.total }}</td><td>{{ row.frequency.recorded }}</td><td>{{ row.frequency.present }}</td><td>{{ row.frequency.absences }}</td><td>{{ row.frequency.justified }}</td><td>{{ row.frequency.pending }}</td><td>{% if row.frequency.percentage is not None %}{{ row.frequency.percentage }}%{% else %}Sem chamada{% endif %}</td></tr>{% empty %}<tr><td colspan="8">Nenhum registro no recorte.</td></tr>{% endfor %}</tbody></table></div>
+{% for row in group.rows %}
+{% if report.enrollment %}
+<div class="section-gap"><h3>Avaliações e observações</h3><p class="muted">Matrícula: {{ row.enrollment.get_status_display }} · Entrada: {{ row.enrollment.starts_on|date:"d/m/Y"|default:"Não informada" }} · Saída: {{ row.enrollment.ends_on|date:"d/m/Y"|default:"Não informada" }}</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Avaliações de {{ row.enrollment.student }}"><table><thead><tr><th>Data / avaliação</th><th>Situação</th><th>Nota / valor</th><th>Observação</th></tr></thead><tbody>{% for item in row.assessments %}<tr><td>{{ item.assessment.date|date:"d/m/Y" }}<small class="cell-subtitle">{{ item.assessment.title }} · {{ item.assessment.get_kind_display }}</small></td><td>{{ item.status }}</td><td>{{ item.score|default_if_none:"—" }} / {{ item.assessment.maximum }}</td><td class="prose">{{ item.note|default:"—"|linebreaksbr }}</td></tr>{% empty %}<tr><td colspan="4">Nenhuma avaliação aplicável.</td></tr>{% endfor %}</tbody></table></div>
+<h3 class="section-gap">Aulas e frequência</h3><div class="table-scroll" tabindex="0" role="region" aria-label="Aulas de {{ row.enrollment.student }}"><table><thead><tr><th>Data / aulas</th><th>Conteúdo</th><th>Faltas / justificadas</th><th>Justificativa</th></tr></thead><tbody>{% for item in row.attendance %}<tr><td>{{ item.lesson.date|date:"d/m/Y" }}<small class="cell-subtitle">{{ item.lesson.quantity }} aula{{ item.lesson.quantity|pluralize }}</small></td><td class="prose">{{ item.lesson.content|linebreaksbr }}</td><td>{% if item.record %}{{ item.record.absences }} / {{ item.record.justified_absences }}{% else %}Chamada pendente{% endif %}</td><td class="prose">{{ item.record.justification|default:"—"|linebreaksbr }}</td></tr>{% empty %}<tr><td colspan="4">Nenhuma aula no vínculo.</td></tr>{% endfor %}</tbody></table></div></div>
+{% elif row.pending_items or row.observations %}
+<div class="report-notes section-gap"><h3>{{ row.enrollment.student }}</h3>{% if row.pending_items %}<h4>Avaliações pendentes</h4><ul>{% for text in row.pending_items %}<li class="prose">{{ text }}</li>{% endfor %}</ul>{% endif %}{% if row.observations %}<h4>Observações registradas</h4>{% for text in row.observations %}<p class="prose">{{ text|linebreaksbr }}</p>{% endfor %}{% endif %}</div>
+{% endif %}
+{% endfor %}
+</section>
+{% empty %}<section class="panel section-gap"><p>Nenhuma disciplina vinculada à turma. Edite a turma para vincular disciplinas.</p></section>{% endfor %}
+</div>
+{% else %}<section class="panel section-gap empty-state"><h2>Escolha o recorte do conselho</h2><p>Selecione turma e período para consultar. Os arquivos exportados usam os mesmos filtros e incluem todas as linhas do relatório.</p></section>{% endif %}
+<script src="{% static 'diary/reports.js' %}" defer></script>
+{% endblock %}

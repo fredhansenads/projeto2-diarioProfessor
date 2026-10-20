@@ -88,6 +88,11 @@ Cadernos são únicos por turma/disciplina/período e guardam regras configuráv
 7. Registro de aulas, listagem com filtros, chamada e consulta de frequência da turma.
 8. Correção de conteúdos/chamadas, cancelamento sem apagar dados e histórico de alterações.
 9. Cadernos com regras configuráveis, provas/trabalhos/atividades, notas, entregas, recuperação, resultados e histórico.
+10. Relatórios de turma e ficha individual por turma/disciplina/período, com PDF, CSV e impressão.
+
+## Relatórios
+
+A Etapa 5 adiciona consultas sem novas tabelas. ReportFilterForm valida conta e compatibilidade dos vínculos; report_services monta os dados chamando grade_summary e frequency_rows, preservando as regras das etapas anteriores. Um mesmo conjunto de dados alimenta HTML, impressão, PDF e CSV. Downloads são privados e sem cache. ReportLab gera PDFs no servidor; CSV usa a biblioteca padrão, com proteção contra fórmulas. pypdf é dependência exclusiva dos testes de exportação. Detalhes e limites em ETAPA5.md.
 
 ## Limites e decisões pedagógicas abertas
 
@@ -96,5 +101,5 @@ Cadernos são únicos por turma/disciplina/período e guardam regras configuráv
 - O recorte por ano civil é uma premissa inicial; calendários que atravessam anos exigirão ajuste.
 - Compartilhamento entre professores, aplicativo nativo, PWA instalável e sincronização offline não estão implementados.
 - Não houve validação de hospedagem, SMTP real ou PostgreSQL.
-- Próxima etapa: relatórios e conselho de classe, somente após nova autorização do usuário.
+- Próxima etapa: experiência no celular/PWA, somente após nova autorização do usuário.
 

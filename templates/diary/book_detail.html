@@ -2,6 +2,7 @@
 {% block title %}{{ book.subject }} · {{ book.classroom.name }} · Notas{% endblock %}
 {% block content %}
 <a class="back-link" href="{% url 'book_list' %}">← Avaliações e notas</a>
+<p class="no-print"><a class="subtle-link" href="{% url 'report' %}?classroom={{ book.classroom_id }}&term={{ book.term_id }}&subject={{ book.subject_id }}">Consultar relatório deste caderno →</a></p>
 <section class="page-heading"><div><p class="eyebrow">{{ book.classroom.school }} · {{ book.classroom.name }} · {{ book.term }}</p><h1>{{ book.subject }}</h1><p>{{ book.get_calculation_display }} · Escala 0 a {{ book.scale }} · Referência {{ book.minimum }}</p></div><div class="toolbar"><a class="button secondary" href="{% url 'book_edit' book.pk %}">Configurar regras</a><a class="button primary" href="{% url 'assessment_create' book.pk %}">+ Nova avaliação</a></div></section>
 <p class="notice">{{ book.get_rounding_display }}, {{ book.precision }} {% if book.precision == 1 %}casa decimal{% else %}casas decimais{% endif %}. Recuperação: {{ book.get_recovery_display|lower }}. Resultados são referências para acompanhamento; aprovação oficial também depende dos critérios da escola.</p>
 {% if not points_ready %}<p class="notice warning">Soma de pontos incompleta: avaliações totalizam {{ planned }} de {{ book.scale }} pontos possíveis. Complete o planejamento para obter resultados finais.</p>{% endif %}

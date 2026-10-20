@@ -9,6 +9,7 @@
   <link rel="icon" href="{% static 'diary/icon.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'diary/app.css' %}">
   <link rel="stylesheet" href="{% static 'diary/teaching.css' %}">
+  <link rel="stylesheet" href="{% static 'diary/reports.css' %}">
 </head>
 <body class="{% if user.is_authenticated %}app-body{% else %}auth-body{% endif %}">
 <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -20,6 +21,7 @@
     <a class="nav-item {% if active == 'dashboard' %}selected{% endif %}" href="{% url 'dashboard' %}" {% if active == 'dashboard' %}aria-current="page"{% endif %}><span aria-hidden="true">⌂</span> Visão geral</a>
     <a class="nav-item {% if active == 'lessons' %}selected{% endif %}" href="{% url 'lesson_list' %}" {% if active == 'lessons' %}aria-current="page"{% endif %}>Aulas e chamada</a>
     <a class="nav-item {% if active == 'grades' %}selected{% endif %}" href="{% url 'book_list' %}" {% if active == 'grades' %}aria-current="page"{% endif %}>Avaliações e notas</a>
+    <a class="nav-item {% if active == 'reports' %}selected{% endif %}" href="{% url 'report' %}" {% if active == 'reports' %}aria-current="page"{% endif %}>Relatórios e conselho</a>
     {% for item in navigation %}
     <a class="nav-item {% if active == item.key %}selected{% endif %}" href="{% url 'record_list' item.key %}" {% if active == item.key %}aria-current="page"{% endif %}>{{ item.title }}</a>
     {% endfor %}

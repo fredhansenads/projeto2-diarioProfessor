@@ -5,6 +5,7 @@
 <section class="page-heading"><div><p class="eyebrow">{{ classroom.school.name }}</p><h1>{{ classroom.name }}</h1><p>{{ classroom.academic_year }} · {{ classroom.get_shift_display }}</p></div><a class="button secondary" href="{% url 'record_edit' 'turmas' classroom.pk %}">Editar turma</a></section>
 <div class="subject-tags">{% for subject in subjects %}<span class="tag">{{ subject.name }}</span>{% empty %}<p class="muted">Nenhuma disciplina vinculada. Edite a turma para adicionar.</p>{% endfor %}</div>
 <div class="toolbar classroom-toolbar">
+  <a class="button secondary" href="{% url 'report' %}?classroom={{ classroom.pk }}">Relatórios e conselho</a>
   <a class="button secondary" href="{% url 'book_list' %}?classroom={{ classroom.pk }}">Avaliações e notas</a>
   <a class="button primary" href="{% url 'lesson_create' classroom.pk %}">+ Registrar aula</a>
   <a class="button secondary" href="{% url 'lesson_list' %}?classroom={{ classroom.pk }}">Aulas e chamada</a>

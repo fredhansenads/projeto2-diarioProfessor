@@ -2,7 +2,7 @@
 
 Sistema em Python/Django para organizar o trabalho do professor no computador e no celular.
 
-**Entrega atual:** contas, cadastros, aulas, frequência, avaliações, entregas e notas com regras configuráveis e histórico de correções. Relatórios de conselho/exportação e instalação como PWA pertencem às próximas etapas. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
+**Entrega atual:** contas, cadastros, aulas, frequência, avaliações, entregas, notas configuráveis e relatórios de conselho/ficha individual com PDF, CSV e impressão. Instalação como PWA e produção pertencem às próximas etapas. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
 
 ## Executar no Windows / PowerShell
 
@@ -37,6 +37,8 @@ Se o ambiente precisar ser recriado, use Python 3.14 e `python -m venv .venv` an
 13. Abra **Avaliações e notas → Novo caderno**, escolha turma/disciplina/período e configure as regras.
 14. Cadastre provas, trabalhos e atividades; use **Notas e entregas** para registrar cada aluno.
 15. Confira resultados, pendências e histórico no caderno. Regras e exemplos em [docs/ETAPA4.md](docs/ETAPA4.md).
+16. Abra **Relatórios e conselho**, selecione turma e período e consulte notas, frequência, pendências e observações.
+17. Clique no aluno para abrir a ficha individual. Use **Baixar PDF**, **Baixar CSV** ou **Versão para impressão**. Detalhes em [docs/ETAPA5.md](docs/ETAPA5.md).
 
 Em uma transferência, altere a matrícula anterior para **Transferida**, informe o último dia na turma (inclusive) e crie a matrícula na nova turma. Ao mudar de ano, crie outra turma e outras matrículas. Não reutilize registros antigos para representar um novo ano.
 
@@ -81,17 +83,20 @@ Acesse `/admin/`. Essa conta administrativa deve ser restrita a pessoas de confi
 ## Verificação
 
 ```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
 .\.venv\Scripts\python.exe manage.py check
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 .\.venv\Scripts\python.exe manage.py test
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 103 testes: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos decimais, pesos, recuperação, zero versus nota ausente, dispensas, isolamento de contas, cancelamentos, correções com histórico, telas desatualizadas, rollback, escape de HTML e CSRF.
+A suíte atual contém 128 testes: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos decimais, pesos, recuperação, zero versus nota ausente, dispensas, isolamento de contas, cancelamentos, correções com histórico, telas desatualizadas, rollback, escape de HTML, CSRF e relatórios/exportações. Os 25 testes da Etapa 5 conferem dados de origem, filtros, permissões, CSV e PDFs, inclusive tabelas longas e paginação.
 
 Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
 Na Etapa 4, caderno e prova foram criados no navegador; notas com vírgula e não entrega sem nota foram salvas no tamanho de celular e conferidas no caderno. Dados fictícios ficam em banco separado.
+
+Na Etapa 5, consultas e downloads PDF/CSV foram verificados no navegador; a ficha individual foi conferida no tamanho de celular. PDFs foram renderizados e inspecionados visualmente. Impressora física não foi validada. Atualize as dependências com requirements-lock.txt antes de iniciar a nova versão; requirements-test.txt acrescenta a ferramenta de conferência dos PDFs para rodar a suíte.
 
 ## Estrutura
 
@@ -106,6 +111,8 @@ Na Etapa 4, caderno e prova foram criados no navegador; notas com vírgula e nã
 - `diary/tests_teaching.py`: testes da etapa de aulas e frequência.
 - `diary/grading_forms.py`, `grading_views.py`, `grading_services.py`: cadernos, avaliações, notas, cálculos e auditoria.
 - `diary/tests_grading.py`: testes da etapa de avaliações e notas.
+- `diary/report_forms.py`, `report_services.py`, `report_views.py`, `report_exports.py`: filtros, consolidação e exportação dos relatórios.
+- `diary/tests_reports.py`: conferência dos relatórios, segurança e arquivos exportados.
 - `templates/`: interface em português.
 - `static/diary/`: estilos responsivos e ícone.
 - `docs/ARQUITETURA.md`: decisões e vínculos do modelo.
