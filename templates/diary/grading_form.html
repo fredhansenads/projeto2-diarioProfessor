@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% if book %}{% url 'book_detail' book.pk %}{% else %}{% url 'book_list' %}{% endif %}">← Voltar ao caderno</a>
+<section class="page-heading"><div><p class="eyebrow">{% if book %}{{ book.classroom }} · {{ book.subject }} · {{ book.term.name }}{% else %}AVALIAÇÕES E NOTAS{% endif %}</p><h1>{{ title }}</h1></div></section>
+<div class="form-layout"><section class="panel form-panel">
+{% if cancelling %}<p class="notice warning">Os lançamentos e o histórico serão preservados. Esta avaliação deixará de entrar nos resultados. O cancelamento não pode ser desfeito.</p>{% endif %}
+{% if policy and book %}<p class="notice warning">Alterar cálculo, média mínima, arredondamento ou recuperação recalcula os resultados. A alteração fica no histórico. A escala fica fixa após cadastrar avaliações.</p>{% endif %}
+<form method="post">{% csrf_token %}{% include "includes/form_fields.html" %}<div class="form-actions"><button class="button {% if cancelling %}danger{% else %}primary{% endif %}" type="submit">{% if cancelling %}Confirmar cancelamento{% else %}Salvar{% endif %}</button></div></form>
+</section><aside class="form-tip">
+{% if policy %}<p class="eyebrow">REGRAS DA SUA ESCOLA</p><h2>Confira antes de começar.</h2><p>Média simples e ponderada convertem cada nota para a escala do caderno. Na ponderada, cada avaliação usa seu peso.</p><p>Na soma de pontos, os valores máximos das avaliações devem somar a escala. Notas são somadas diretamente.</p><p>O arredondamento acontece no resultado final. A média mínima é comparada com esse resultado arredondado.</p><p>Recuperação é opcional por aluno: só entra se houver lançamento. Uma recuperação registrada sem nota deixa o resultado pendente.</p>
+{% else %}<h2>Uma avaliação, todos os alunos.</h2><p>A data define quem estava matriculado. Avaliações futuras podem ser planejadas, mas resultados só podem ser lançados a partir da data prevista.</p><p>Depois de lançar entregas ou notas, tipo, data, valor e peso ficam protegidos. Para corrigir esses dados, cancele e registre outra avaliação.</p>{% endif %}
+</aside></div>
+{% endblock %}

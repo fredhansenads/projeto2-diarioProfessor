@@ -19,6 +19,7 @@
   <nav aria-label="Navegação principal">
     <a class="nav-item {% if active == 'dashboard' %}selected{% endif %}" href="{% url 'dashboard' %}" {% if active == 'dashboard' %}aria-current="page"{% endif %}><span aria-hidden="true">⌂</span> Visão geral</a>
     <a class="nav-item {% if active == 'lessons' %}selected{% endif %}" href="{% url 'lesson_list' %}" {% if active == 'lessons' %}aria-current="page"{% endif %}>Aulas e chamada</a>
+    <a class="nav-item {% if active == 'grades' %}selected{% endif %}" href="{% url 'book_list' %}" {% if active == 'grades' %}aria-current="page"{% endif %}>Avaliações e notas</a>
     {% for item in navigation %}
     <a class="nav-item {% if active == item.key %}selected{% endif %}" href="{% url 'record_list' item.key %}" {% if active == item.key %}aria-current="page"{% endif %}>{{ item.title }}</a>
     {% endfor %}

@@ -1,7 +1,15 @@
 from django.urls import path
-from . import teaching_views, views
+from . import grading_views, teaching_views, views
 
 urlpatterns = [
+    path("notas/", grading_views.book_list, name="book_list"),
+    path("notas/novo/", grading_views.book_form, name="book_create"),
+    path("notas/<int:pk>/", grading_views.book_detail, name="book_detail"),
+    path("notas/<int:pk>/regras/", grading_views.book_form, name="book_edit"),
+    path("notas/<int:book_pk>/avaliacao/nova/", grading_views.assessment_form, name="assessment_create"),
+    path("avaliacoes/<int:pk>/editar/", grading_views.assessment_form, name="assessment_edit"),
+    path("avaliacoes/<int:pk>/notas/", grading_views.grade_form, name="grade_form"),
+    path("avaliacoes/<int:pk>/cancelar/", grading_views.assessment_cancel, name="assessment_cancel"),
     path("", views.dashboard, name="dashboard"),
     path("criar-conta/", views.register, name="register"),
     path("turmas/<int:pk>/", views.classroom_detail, name="classroom_detail"),

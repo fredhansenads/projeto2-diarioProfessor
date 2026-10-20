@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -76,7 +77,8 @@ class AcademicYear(OwnedRecord):
             raise ValidationError({"year": "Há períodos vinculados com datas de outro ano."})
         if self.pk and AcademicYear.objects.get(pk=self.pk).year != self.year:
             if self.classrooms.filter(models.Q(enrollments__isnull=False) |
-                                      models.Q(lessons__isnull=False)).exists():
+                                      models.Q(lessons__isnull=False) |
+                                      models.Q(gradebooks__isnull=False)).exists():
                 raise ValidationError({"year": "Crie outro ano para preservar matrículas e aulas existentes."})
 
     def __str__(self):
@@ -112,6 +114,11 @@ class Term(OwnedRecord):
                 year = self.academic_year.year
                 if self.start_date.year != year or self.end_date.year != year:
                     raise ValidationError("As datas devem pertencer ao ano letivo selecionado.")
+        if self.pk and self.gradebooks.exists():
+            previous = Term.objects.get(pk=self.pk)
+            if any(getattr(previous, key) != getattr(self, key) for key in
+                   ("school_id", "academic_year_id", "start_date", "end_date")):
+                raise ValidationError("Preserve escola, ano e datas de períodos com cadernos de notas.")
 
     def __str__(self):
         return f"{self.name} · {self.academic_year}"
@@ -157,7 +164,7 @@ class Classroom(OwnedRecord):
 
     def clean(self):
         super().clean()
-        if self.pk and (self.enrollments.exists() or self.lessons.exists()):
+        if self.pk and (self.enrollments.exists() or self.lessons.exists() or self.gradebooks.exists()):
             previous = Classroom.objects.get(pk=self.pk)
             if (previous.school_id, previous.academic_year_id) != (
                     self.school_id, self.academic_year_id):
@@ -244,6 +251,11 @@ class Enrollment(OwnedRecord):
                 self.ends_on and records.filter(lesson__date__gt=self.ends_on).exists()
             ):
                 raise ValidationError("Estas datas excluem chamadas já registradas. Revise as aulas antes de alterar.")
+            grades = self.grade_records.filter(assessment__is_cancelled=False)
+            if (self.starts_on and grades.filter(assessment__date__lt=self.starts_on).exists()) or (
+                self.ends_on and grades.filter(assessment__date__gt=self.ends_on).exists()
+            ):
+                raise ValidationError("Estas datas excluem notas ou entregas registradas. Revise as avaliações.")
 
     def covers(self, lesson_date):
         if lesson_date.year != self.classroom.academic_year.year:
@@ -381,6 +393,191 @@ class LessonAudit(OwnedRecord):
         super().clean()
         if self.actor_id != self.owner_id:
             raise ValidationError("O autor deve ser o professor responsável pelo registro.")
+        if self.pk:
+            raise ValidationError("O histórico não pode ser editado.")
+
+class Gradebook(OwnedRecord):
+    class Calculation(models.TextChoices):
+        SIMPLE = "simple", "Média simples"
+        WEIGHTED = "weighted", "Média ponderada"
+        POINTS = "points", "Soma de pontos"
+
+    class Rounding(models.TextChoices):
+        HALF_UP = "half_up", "Arredondar (5 sobe)"
+        TRUNCATE = "truncate", "Truncar (descartar casas)"
+
+    class Recovery(models.TextChoices):
+        NONE = "none", "Sem recuperação"
+        HIGHER = "higher", "Maior entre média e recuperação"
+        REPLACE = "replace", "Substituir pela recuperação"
+        AVERAGE = "average", "Média entre original e recuperação"
+
+    classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT, related_name="gradebooks", verbose_name="turma")
+    subject = models.ForeignKey(Subject, on_delete=models.PROTECT, related_name="gradebooks", verbose_name="disciplina")
+    term = models.ForeignKey(Term, on_delete=models.PROTECT, related_name="gradebooks", verbose_name="período")
+    calculation = models.CharField("cálculo", max_length=12, choices=Calculation.choices, default=Calculation.SIMPLE)
+    scale = models.DecimalField("nota máxima da escala", max_digits=7, decimal_places=2, default=10,
+                               validators=[MinValueValidator(Decimal("0.01")), MaxValueValidator(10000)])
+    minimum = models.DecimalField("média mínima de referência", max_digits=7, decimal_places=2, default=6,
+                                 validators=[MinValueValidator(0)],
+                                 help_text="Comparação pedagógica; não determina aprovação oficial.")
+    precision = models.PositiveSmallIntegerField("casas decimais", default=1,
+                                                 validators=[MaxValueValidator(2)])
+    rounding = models.CharField("arredondamento", max_length=12, choices=Rounding.choices, default=Rounding.HALF_UP)
+    recovery = models.CharField("regra de recuperação", max_length=12, choices=Recovery.choices, default=Recovery.NONE)
+    version = models.PositiveIntegerField(default=0, editable=False)
+
+    class Meta:
+        ordering = ["-term__academic_year__year", "classroom__name", "subject__name", "term__start_date", "pk"]
+        constraints = [
+            models.UniqueConstraint(fields=["classroom", "subject", "term"], name="unique_gradebook"),
+            models.CheckConstraint(condition=models.Q(scale__gt=0, minimum__gte=0, minimum__lte=models.F("scale"),
+                                                       precision__lte=2), name="gradebook_limits"),
+        ]
+
+    def clean(self):
+        super().clean()
+        if self.scale is not None and self.minimum is not None and self.minimum > self.scale:
+            raise ValidationError({"minimum": "A média mínima não pode superar a escala."})
+        if self.classroom_id and self.term_id:
+            if (self.classroom.school_id, self.classroom.academic_year_id) != (
+                    self.term.school_id, self.term.academic_year_id):
+                raise ValidationError("O período deve pertencer à escola e ao ano da turma.")
+        if self.classroom_id and self.subject_id:
+            if not self.classroom.subjects.filter(pk=self.subject_id).exists():
+                raise ValidationError({"subject": "Vincule a disciplina à turma primeiro."})
+        if self.pk:
+            previous = Gradebook.objects.get(pk=self.pk)
+            if any(getattr(previous, key) != getattr(self, key) for key in
+                   ("classroom_id", "subject_id", "term_id")):
+                raise ValidationError("O vínculo do caderno não pode mudar. Crie outro caderno.")
+            if self.assessments.exists() and previous.scale != self.scale:
+                raise ValidationError({"scale": "Preserve a escala após cadastrar avaliações."})
+            if self.recovery == self.Recovery.NONE and self.assessments.filter(
+                    kind="recovery", is_cancelled=False).exists():
+                raise ValidationError({"recovery": "Cancele a avaliação de recuperação antes de desativar a regra."})
+            if self.calculation == self.Calculation.POINTS and self.scale is not None:
+                total = self.assessments.filter(is_cancelled=False).exclude(kind="recovery").aggregate(
+                    total=models.Sum("maximum"))["total"] or 0
+                if total > self.scale:
+                    raise ValidationError({"calculation": "Os valores das avaliações superam a escala para soma de pontos."})
+
+    def __str__(self):
+        return f"{self.classroom.name} · {self.subject} · {self.term}"
+
+
+class Assessment(OwnedRecord):
+    class Kind(models.TextChoices):
+        TEST = "test", "Prova"
+        WORK = "work", "Trabalho"
+        ACTIVITY = "activity", "Atividade"
+        RECOVERY = "recovery", "Recuperação"
+
+    gradebook = models.ForeignKey(Gradebook, on_delete=models.PROTECT, related_name="assessments")
+    title = models.CharField("título", max_length=160)
+    kind = models.CharField("tipo", max_length=12, choices=Kind.choices, default=Kind.TEST)
+    date = models.DateField("data da avaliação / entrega", help_text="Define quais matrículas participam. Deve estar dentro do período.")
+    maximum = models.DecimalField("valor máximo", max_digits=7, decimal_places=2, default=10,
+                                 validators=[MinValueValidator(Decimal("0.01")), MaxValueValidator(10000)])
+    weight = models.DecimalField("peso", max_digits=6, decimal_places=2, default=1,
+                                validators=[MinValueValidator(Decimal("0.01")), MaxValueValidator(1000)],
+                                help_text="Usado somente na média ponderada; recuperação não usa peso.")
+    instructions = models.TextField("orientações", max_length=3000, blank=True)
+    is_cancelled = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["date", "pk"]
+        constraints = [
+            models.CheckConstraint(condition=models.Q(maximum__gt=0, weight__gt=0), name="assessment_positive_values"),
+            models.UniqueConstraint(fields=["gradebook"], condition=models.Q(kind="recovery", is_cancelled=False),
+                                    name="one_active_recovery"),
+        ]
+
+    def clean(self):
+        super().clean()
+        if self.gradebook_id:
+            book = self.gradebook
+            if self.date and not book.term.start_date <= self.date <= book.term.end_date:
+                raise ValidationError({"date": "A data deve estar dentro do período do caderno."})
+            if self.kind == self.Kind.RECOVERY and book.recovery == Gradebook.Recovery.NONE:
+                raise ValidationError({"kind": "Configure uma regra de recuperação no caderno primeiro."})
+            if book.calculation == Gradebook.Calculation.POINTS and self.kind != self.Kind.RECOVERY and not self.is_cancelled:
+                total = book.assessments.filter(is_cancelled=False).exclude(kind="recovery").exclude(pk=self.pk).aggregate(
+                    total=models.Sum("maximum"))["total"] or 0
+                if self.maximum is not None and total + self.maximum > book.scale:
+                    raise ValidationError({"maximum": "A soma dos valores máximos não pode superar a escala do caderno."})
+        if self.pk:
+            previous = Assessment.objects.get(pk=self.pk)
+            if previous.is_cancelled:
+                raise ValidationError("Avaliação cancelada: disponível apenas para consulta.")
+            if self.gradebook_id != previous.gradebook_id:
+                raise ValidationError("O caderno da avaliação não pode mudar.")
+            if self.grades.exists() and any(getattr(previous, key) != getattr(self, key)
+                                          for key in ("kind", "date", "maximum", "weight")):
+                raise ValidationError("Após lançamentos, preserve tipo, data, valor e peso. Cancele e recrie se necessário.")
+
+    def __str__(self):
+        return self.title
+
+
+class Grade(OwnedRecord):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pendente"
+        SUBMITTED = "submitted", "Realizada / entregue"
+        MISSING = "missing", "Não realizada / não entregue"
+        EXEMPT = "exempt", "Dispensada"
+
+    assessment = models.ForeignKey(Assessment, on_delete=models.PROTECT, related_name="grades")
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.PROTECT, related_name="grade_records")
+    status = models.CharField("situação", max_length=12, choices=Status.choices, default=Status.PENDING)
+    score = models.DecimalField("nota", max_digits=7, decimal_places=2, null=True, blank=True,
+                                validators=[MinValueValidator(0)])
+    note = models.CharField("observação pedagógica", max_length=500, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["assessment", "enrollment"], name="unique_grade"),
+            models.CheckConstraint(condition=models.Q(score__isnull=True) | models.Q(score__gte=0),
+                                   name="grade_nonnegative"),
+        ]
+
+    def clean(self):
+        super().clean()
+        if self.pk:
+            previous = Grade.objects.get(pk=self.pk)
+            if (previous.assessment_id, previous.enrollment_id) != (self.assessment_id, self.enrollment_id):
+                raise ValidationError("Preserve a avaliação e a matrícula do lançamento.")
+        if self.assessment_id and self.enrollment_id:
+            if self.enrollment.classroom_id != self.assessment.gradebook.classroom_id:
+                raise ValidationError("A matrícula não pertence à turma do caderno.")
+            if not self.enrollment.covers(self.assessment.date):
+                raise ValidationError("O aluno não estava matriculado na data da avaliação.")
+            if self.assessment.is_cancelled:
+                raise ValidationError("Não é possível lançar notas de avaliação cancelada.")
+            if self.score is not None and self.score > self.assessment.maximum:
+                raise ValidationError({"score": "A nota não pode superar o valor da avaliação."})
+            if self.assessment.date > timezone.localdate() and (self.score is not None or self.status != self.Status.PENDING):
+                raise ValidationError("A avaliação está no futuro. Registre resultados a partir da data prevista.")
+        if self.status in (self.Status.PENDING, self.Status.EXEMPT) and self.score is not None:
+            raise ValidationError({"score": "Pendência ou dispensa deve ficar sem nota."})
+        if self.status == self.Status.EXEMPT and not self.note.strip():
+            raise ValidationError({"note": "Explique a dispensa."})
+
+
+class GradeAudit(OwnedRecord):
+    gradebook = models.ForeignKey(Gradebook, on_delete=models.PROTECT, related_name="history")
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="grade_changes")
+    action = models.CharField(max_length=100)
+    reason = models.CharField(max_length=500, blank=True)
+    changes = models.JSONField(default=list)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def clean(self):
+        super().clean()
+        if self.actor_id != self.owner_id:
+            raise ValidationError("O autor deve ser o professor responsável.")
         if self.pk:
             raise ValidationError("O histórico não pode ser editado.")
 

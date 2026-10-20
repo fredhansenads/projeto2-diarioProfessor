@@ -1,4 +1,9 @@
 [hidden] { display: none !important; }
+.book-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.book-row:last-child { border-bottom: 0; }
+.book-row > div { min-width: 0; flex: 1 1 240px; overflow-wrap: anywhere; }
+.book-row h2, .book-row h3 { margin: 0 0 8px; }
+.book-row p { margin: 0; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; }
 .classroom-toolbar { margin: 24px 0; }
 .filter-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }

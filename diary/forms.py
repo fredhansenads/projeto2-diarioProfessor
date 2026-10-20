@@ -34,6 +34,8 @@ class OwnedModelForm(forms.ModelForm):
         if isinstance(self.instance, Classroom) and self.instance.pk and "subjects" in cleaned:
             if self.instance.lessons.exclude(subject__in=cleaned["subjects"]).exists():
                 self.add_error("subjects", "Preserve disciplinas que já possuem aulas registradas.")
+            elif self.instance.gradebooks.exclude(subject__in=cleaned["subjects"]).exists():
+                self.add_error("subjects", "Preserve disciplinas que possuem cadernos de notas.")
         return cleaned
 
     def _get_validation_exclusions(self):

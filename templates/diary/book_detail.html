@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ book.subject }} · {{ book.classroom.name }} · Notas{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'book_list' %}">← Avaliações e notas</a>
+<section class="page-heading"><div><p class="eyebrow">{{ book.classroom.school }} · {{ book.classroom.name }} · {{ book.term }}</p><h1>{{ book.subject }}</h1><p>{{ book.get_calculation_display }} · Escala 0 a {{ book.scale }} · Referência {{ book.minimum }}</p></div><div class="toolbar"><a class="button secondary" href="{% url 'book_edit' book.pk %}">Configurar regras</a><a class="button primary" href="{% url 'assessment_create' book.pk %}">+ Nova avaliação</a></div></section>
+<p class="notice">{{ book.get_rounding_display }}, {{ book.precision }} {% if book.precision == 1 %}casa decimal{% else %}casas decimais{% endif %}. Recuperação: {{ book.get_recovery_display|lower }}. Resultados são referências para acompanhamento; aprovação oficial também depende dos critérios da escola.</p>
+{% if not points_ready %}<p class="notice warning">Soma de pontos incompleta: avaliações totalizam {{ planned }} de {{ book.scale }} pontos possíveis. Complete o planejamento para obter resultados finais.</p>{% endif %}
+<section class="panel"><div class="section-heading"><h2>Avaliações do período</h2></div>
+{% for item in all_assessments %}<div class="book-row"><div><h3><a href="{% url 'grade_form' item.pk %}">{{ item.title }}</a> {% if item.is_cancelled %}<span class="tag">Cancelada</span>{% endif %}</h3><p class="muted">{{ item.get_kind_display }} · {{ item.date|date:"d/m/Y" }} · Valor {{ item.maximum }} · Peso {{ item.weight }}</p></div><a class="button secondary" href="{% url 'grade_form' item.pk %}">{% if item.is_cancelled %}Consultar{% else %}Notas e entregas{% endif %}</a></div>
+{% empty %}<div class="empty-state"><h3>Prepare a primeira avaliação</h3><p>Provas, trabalhos e atividades aparecem aqui, junto com seus lançamentos.</p></div>{% endfor %}</section>
+<section class="panel section-gap"><div class="section-heading"><h2>Resultados dos alunos</h2></div><p class="muted">A base parcial usa apenas notas lançadas. O resultado fica pendente enquanto faltarem notas. Recuperação é aplicada à base sem arredondamento intermediário.</p>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Resultados dos alunos"><table><thead><tr><th>Aluno</th><th>Base / parcial</th><th>Recuperação</th><th>Resultado</th><th>Notas pendentes</th><th>Não entregues</th><th>Dispensas</th><th>Situação</th></tr></thead><tbody>
+{% for row in rows %}<tr><td>{{ row.enrollment.student }}</td><td>{{ row.original|default_if_none:"—" }}</td><td>{{ row.recovery|default_if_none:"—" }}</td><td><strong>{{ row.final|default_if_none:"—" }}</strong></td><td>{{ row.pending }}</td><td>{{ row.missing }}</td><td>{{ row.exempt }}</td><td>{{ row.status }}</td></tr>
+{% empty %}<tr><td colspan="8">Nenhum aluno matriculado neste período.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<section class="panel section-gap" id="historico"><p class="eyebrow">AUTORIA E CORREÇÕES</p><h2>Histórico do caderno</h2>
+{% for event in history %}<details class="audit-entry"><summary><strong>{{ event.action }}</strong><small>{{ event.created_at|date:"d/m/Y H:i:s" }} · {{ event.actor.get_full_name|default:event.actor.username }}</small></summary>{% if event.reason %}<p><strong>Motivo:</strong> {{ event.reason }}</p>{% endif %}{% for change in event.changes %}<div class="audit-change"><strong>{{ change.label }}</strong><p><span>Antes:</span> {{ change.before }}</p><p><span>Depois:</span> {{ change.after }}</p></div>{% endfor %}</details>{% endfor %}
+{% if history.paginator.num_pages > 1 %}<div class="pagination">{% if history.has_previous %}<a href="?historico={{ history.previous_page_number }}#historico">← Mais recentes</a>{% endif %}<span>{{ history.number }} / {{ history.paginator.num_pages }}</span>{% if history.has_next %}<a href="?historico={{ history.next_page_number }}#historico">Mais antigas →</a>{% endif %}</div>{% endif %}
+</section>
+{% endblock %}

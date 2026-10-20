@@ -2,7 +2,7 @@
 
 Criado em: 19/10/2026  
 Última atualização: 19/10/2026  
-Status: Etapa 3 implementada e validada; aguardar autorização antes da Etapa 4.
+Status: Etapa 4 implementada e validada; aguardar autorização antes da Etapa 5.
 
 ## 1. Objetivo
 
@@ -18,6 +18,7 @@ Criar um sistema web e uma experiência de aplicativo para celular que ajudem o 
 - Após a documentação, o usuário autorizou: “Agora pode iniciar o projeto, pode execultar.”
 - A primeira entrega implementa contas, painel e os cadastros da Etapa 2.
 - A Etapa 3 acrescenta aulas, conteúdos, frequência por aula e histórico de correções.
+- A Etapa 4 acrescenta cadernos, avaliações, entregas, notas e recuperação com regras configuráveis por turma/disciplina/período.
 - Regra de continuidade do usuário: concluir uma etapa por vez, salvar no Git e enviar ao GitHub, e sempre perguntar antes de iniciar a seguinte.
 - Premissas adotadas para iniciar: Django, contas separadas, uso conectado e interface responsiva. Regras pedagógicas específicas continuam abertas.
 
@@ -46,7 +47,7 @@ O início foi autorizado. As premissas abaixo permitem avançar na base; confirm
 | É necessário fazer chamada e lançar dados sem internet? | Premissa inicial: uso conectado. Necessidade de offline ainda não informada |
 | PWA atende ou é necessário publicar nas lojas de aplicativos? | Direção inicial: web responsiva, depois PWA. Necessidade de lojas ainda não informada |
 | Quais períodos letivos serão usados: bimestres, trimestres, semestres ou outros? | Cadastro livre de nome e datas por escola/ano implementado; regras pedagógicas a definir |
-| Quais regras de notas, pesos, arredondamento, aprovação e recuperação devem ser atendidas? | Pendente |
+| Quais regras de notas, pesos, arredondamento, aprovação e recuperação devem ser atendidas? | Usuário escolheu configuração por turma/disciplina/período. Cálculos e limites implementados em docs/ETAPA4.md; não há decisão oficial de aprovação |
 | A frequência será registrada por aula, por dia ou por outro critério? | Confirmada pelo usuário: por aula, com várias aulas no encontro e faltas parciais |
 | Quais informações e formatos são necessários para o conselho de classe e o sistema da escola? | Pendente |
 | Onde será hospedado e como serão mantidos e restaurados os backups? | Definir antes da implantação |
@@ -133,13 +134,15 @@ As caixas abaixo registram conclusão, não apenas início. Atualizar este docum
 
 ### Etapa 4 — Implementar avaliações e notas
 
-- [ ] Criar provas, trabalhos e atividades.
-- [ ] Registrar entregas e pendências.
-- [ ] Implementar lançamento e edição de notas.
-- [ ] Implementar médias, pesos, arredondamentos e recuperação aprovados.
-- [ ] Testar cálculos com exemplos conhecidos e situações de notas ausentes.
+- [x] Criar provas, trabalhos e atividades.
+- [x] Registrar entregas e pendências.
+- [x] Implementar lançamento e edição de notas.
+- [x] Implementar médias, pesos, arredondamentos e recuperação aprovados.
+- [x] Testar cálculos com exemplos conhecidos e situações de notas ausentes.
 
 **Critério de conclusão:** resultados conferem com os exemplos aprovados e situações diferentes de avaliação permanecem identificáveis.
+
+**Entrega:** cadernos por turma/disciplina/período, média simples/ponderada/soma de pontos, escala e referência configuráveis, arredondamento/truncamento, quatro opções de recuperação, entregas/pendências/dispensas, observações e auditoria. Exemplos numéricos documentados e testados; revisão do professor com as regras reais da escola ainda integra a validação de uso. Detalhes em docs/ETAPA4.md.
 
 ### Etapa 5 — Implementar relatórios e conselho de classe
 
@@ -202,17 +205,17 @@ Não incluir automaticamente na primeira versão:
 
 ## 9. Ponto de continuidade
 
-**Etapa atual:** Etapa 3 concluída; próxima entrega é a Etapa 4.
+**Etapa atual:** Etapa 4 concluída; próxima entrega é a Etapa 5.
 
-**Última entrega:** aulas, conteúdos, chamada, frequência, datas das matrículas e histórico de alterações.
+**Última entrega:** avaliações, notas, entregas, pendências, médias e recuperação configuráveis, com histórico de alterações.
 
-**Próxima ação:** perguntar se o usuário autoriza a Etapa 4 (avaliações e notas). Após autorização, detalhar pesos, médias, arredondamentos e recuperação antes de implementar essas regras.
+**Próxima ação:** perguntar se o usuário autoriza a Etapa 5 (relatórios e conselho de classe). Após autorização, definir os recortes e formatos necessários para os relatórios.
 
-**Autorização:** concluir a etapa corrente, salvar no Git/GitHub e perguntar antes de avançar. A Etapa 4 depende de nova confirmação. Disponibilização pública não realizada.
+**Autorização:** Etapa 4 autorizada e concluída. Salvar no Git/GitHub e perguntar antes de avançar. A Etapa 5 depende de nova confirmação. Disponibilização pública não realizada.
 **Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e configuração futura para PostgreSQL.  
-**Testes da aplicação:** 64 testes automatizados aprovados; registro de aula, chamada com faltas parciais e justificativa, atalho de presença e filtro de frequência verificados no navegador. Chamada preenchida e salva em janela de celular de 390 × 844 pixels, sem transbordamento da página.
+**Testes da aplicação:** 103 testes automatizados aprovados (39 novos de notas). Fluxos de aulas/chamada e de caderno/avaliação/notas verificados no navegador, incluindo notas com vírgula e não entrega sem nota. Formulários preenchidos e salvos em janela de celular de 390 × 844 pixels, sem transbordamento da página.
 
-**Limitações atuais:** sem avaliações, notas, relatórios de conselho/exportação ou instalação PWA; e-mail de recuperação apenas no terminal por padrão; PostgreSQL, SMTP real e produção não validados. Justificativas não aplicam abono nem critérios automáticos de aprovação.
+**Limitações atuais:** sem relatórios de conselho/exportação ou instalação PWA; e-mail de recuperação apenas no terminal por padrão; PostgreSQL, SMTP real e produção não validados. Justificativas não aplicam abono. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
 
 **Como executar:** consultar README.md e aplicar as migrações. Não há conta ou senha padrão. Matrículas antigas permanecem preservadas; revisar datas de entrada e saída. Dados fictícios de verificação usam banco temporário separado.
 
@@ -223,6 +226,7 @@ Não incluir automaticamente na primeira versão:
 | 19/10/2026 | Criação do plano, etapas, critérios de conclusão e roteiro de continuidade | Documento registrado; desenvolvimento não iniciado | Resolver decisões essenciais e aprovar o plano |
 | 19/10/2026 | Início autorizado; entrega da base Django, interface responsiva, autenticação, cadastros e isolamento de dados | 26 testes aprovados e verificação visual de computador/celular | Etapa 3: aulas, conteúdos e frequência |
 | 19/10/2026 | Etapa 3: aulas, conteúdos, chamada por aula, justificativas, consultas e histórico; continuidade condicionada a autorização por etapa | 64 testes aprovados e fluxo de chamada validado em computador/celular | Salvar no Git/GitHub e solicitar autorização para a Etapa 4 |
+| 19/10/2026 | Etapa 4 autorizada: cadernos, avaliações, entregas, notas e recuperação configuráveis; auditoria e proteção contra sobrescrita | 103 testes aprovados; criação e lançamento no navegador com dados fictícios e tamanho de celular | Salvar no Git/GitHub e solicitar autorização para a Etapa 5 |
 
 ### Decisões aprovadas
 
@@ -233,5 +237,6 @@ Não incluir automaticamente na primeira versão:
 | 19/10/2026 | Autorizar o início e a execução do projeto | “Agora pode iniciar o projeto, pode execultar.” |
 | 19/10/2026 | Trabalhar uma etapa por vez, salvar no Git e GitHub e perguntar antes da seguinte | Solicitação explícita do usuário |
 | 19/10/2026 | Frequência por aula, com múltiplas aulas no encontro e faltas parciais | Resposta “Sim, frequência por aula (recomendado)” |
+| 19/10/2026 | Executar a Etapa 4; regras de notas configuráveis por turma, disciplina e período | “sim, pode. etapa 4.” e resposta à pergunta sobre regras |
 
 Django, SQLite local, preparação para PostgreSQL, contas isoladas e uso conectado foram adotados como decisões iniciais de implementação dentro da autorização para começar. PWA é uma etapa futura. Detalhes e limitações estão em docs/ARQUITETURA.md.

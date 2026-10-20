@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ assessment.title }} · Notas e entregas{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'book_detail' book.pk %}">← {{ book.classroom.name }} · {{ book.subject }} · {{ book.term.name }}</a>
+<section class="page-heading"><div><p class="eyebrow">{{ assessment.get_kind_display }} · {{ assessment.date|date:"d/m/Y" }}</p><h1>{{ assessment.title }}</h1><p>Valor: {{ assessment.maximum }} · Peso: {{ assessment.weight }}</p></div>
+{% if not assessment.is_cancelled %}<a class="button secondary" href="{% url 'assessment_edit' assessment.pk %}">Corrigir avaliação</a>{% endif %}</section>
+{% if assessment.instructions %}<p class="notice prose">{{ assessment.instructions|linebreaksbr }}</p>{% endif %}
+{% if assessment.is_cancelled %}
+<p class="notice warning">Avaliação cancelada. Estes lançamentos não entram nos cálculos.</p>
+<section class="panel">{% for record in records %}<div class="book-row"><strong>{{ record.enrollment.student }}</strong><p>{{ record.get_status_display }} · Nota: {{ record.score|default_if_none:"—" }}<span class="cell-subtitle">{{ record.note }}</span></p></div>{% empty %}<p>Nenhum lançamento.</p>{% endfor %}</section>
+{% else %}
+<p class="notice">Deixe a nota vazia enquanto não houver correção. Zero é uma nota válida e deve ser digitado. “Não entregue” não vira zero automaticamente. Dispensa exige uma observação e exclui a avaliação do cálculo do aluno.</p>
+<form method="post">{% csrf_token %}
+{% for field in form.hidden_fields %}{{ field }}{{ field.errors }}{% endfor %}
+{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+<div class="attendance-list">{% for row in form.rows %}
+<section class="panel"><div class="attendance-student"><span class="avatar" aria-hidden="true">{{ forloop.counter }}</span><h2>{{ row.enrollment.student }}</h2></div><div class="attendance-fields">
+{% include "includes/single_field.html" with field=row.status %}
+{% include "includes/single_field.html" with field=row.score %}
+{% include "includes/single_field.html" with field=row.note %}
+</div></section>
+{% empty %}<section class="panel"><p>Nenhuma matrícula na data desta avaliação. Revise as datas de entrada e saída dos alunos.</p></section>{% endfor %}</div>
+{% if form.rows %}<section class="panel section-gap">{% include "includes/single_field.html" with field=form.reason %}<button class="button primary" type="submit">Salvar notas e entregas</button></section>{% endif %}
+</form>
+<div class="section-gap"><a class="danger-link" href="{% url 'assessment_cancel' assessment.pk %}">Cancelar avaliação</a></div>
+{% endif %}
+{% endblock %}

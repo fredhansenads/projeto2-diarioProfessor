@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Avaliações e notas · Diário do Professor{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">ACOMPANHAMENTO PEDAGÓGICO</p><h1>Avaliações e notas</h1><p>Um caderno para cada turma, disciplina e período.</p></div><a class="button primary" href="{% url 'book_create' %}">+ Novo caderno</a></section>
+{% if classroom_filter %}<p><a href="{% url 'book_list' %}">Ver todos os cadernos</a></p>{% endif %}
+<section class="panel">
+{% for book in page_obj %}
+<div class="book-row"><div><h2><a href="{% url 'book_detail' book.pk %}">{{ book.classroom.name }} · {{ book.subject }}</a></h2><p class="muted">{{ book.classroom.school }} · {{ book.term }} · {{ book.get_calculation_display }}</p></div><a class="button secondary" href="{% url 'book_detail' book.pk %}">Abrir caderno</a></div>
+{% empty %}<div class="empty-state"><h2>As notas começam pelas regras</h2><p>Cadastre turma, disciplina e período. Depois crie o caderno e configure como calcular os resultados.</p><a class="button primary" href="{% url 'book_create' %}">Criar caderno de notas</a></div>{% endfor %}
+{% if page_obj.paginator.num_pages > 1 %}<div class="pagination">{% if page_obj.has_previous %}<a href="?classroom={{ classroom_filter|urlencode }}&page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}<span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?classroom={{ classroom_filter|urlencode }}&page={{ page_obj.next_page_number }}">Próxima →</a>{% endif %}</div>{% endif %}
+</section>
+{% endblock %}
