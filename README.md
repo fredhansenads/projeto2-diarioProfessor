@@ -2,7 +2,7 @@
 
 Sistema em Python/Django para organizar o trabalho do professor no computador e no celular.
 
-**Entrega atual:** base funcional com contas, painel e cadastros. Aulas, frequência, avaliações, notas, relatórios e instalação como PWA ainda serão implementados. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
+**Entrega atual:** contas, painel, cadastros, aulas, conteúdos e frequência por aula com histórico de correções. Avaliações, notas, relatórios de conselho/exportação e instalação como PWA ainda serão implementados. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
 
 ## Executar no Windows / PowerShell
 
@@ -28,10 +28,18 @@ Se o ambiente precisar ser recriado, use Python 3.14 e `python -m venv .venv` an
 4. Cadastre as disciplinas.
 5. Crie uma turma, escolhendo escola, ano, turno e disciplinas.
 6. Cadastre os alunos.
-7. Crie as matrículas para vincular alunos às turmas.
+7. Crie as matrículas para vincular alunos às turmas e informe o primeiro dia na turma.
 8. Abra uma turma para consultar seus alunos e situações de matrícula.
+9. Use **Registrar aula** para informar disciplina, data, quantidade de aulas e conteúdo.
+10. Abra **Fazer chamada**, marque as faltas de cada aluno e clique em **Salvar chamada**.
+11. Consulte a **Frequência da turma**, com filtros por disciplina, período e datas.
+12. Para corrigir registros, informe o motivo. A aula mostra o histórico com autor e valores anteriores/novos.
 
-Em uma transferência, altere a matrícula anterior para **Transferida** e crie a matrícula na nova turma. Ao mudar de ano, crie outra turma e outras matrículas. Não reutilize registros antigos para representar um novo ano.
+Em uma transferência, altere a matrícula anterior para **Transferida**, informe o último dia na turma (inclusive) e crie a matrícula na nova turma. Ao mudar de ano, crie outra turma e outras matrículas. Não reutilize registros antigos para representar um novo ano.
+
+**Atualização de uma instalação anterior:** execute `manage.py migrate` antes de reiniciar o servidor. As matrículas existentes são preservadas, mas suas datas não são inventadas: revise entrada e saída. Matrícula ativa antiga sem entrada considera o início do ano; matrícula encerrada sem saída fica fora de novas chamadas e é sinalizada para revisão.
+
+**Como a frequência é calculada:** faltas parciais respeitam a quantidade de aulas do encontro. O percentual usa somente aulas com chamada registrada; pendências aparecem separadamente. Justificativas são identificadas, mas não abonam faltas automaticamente. Consulte as regras e exemplos em [docs/ETAPA3.md](docs/ETAPA3.md).
 
 Os registros de cada professor são independentes, inclusive quando dois professores trabalham na mesma escola. Não há compartilhamento entre contas nesta entrega.
 
@@ -76,9 +84,9 @@ Acesse `/admin/`. Essa conta administrativa deve ser restrita a pessoas de confi
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 26 testes: acesso autenticado, cadastro completo, isolamento de contas, vínculos indevidos, duplicidade, datas, preservação das matrículas, busca, paginação, escape de HTML, CSRF e recuperação de senha.
+A suíte atual contém 64 testes: autenticação e cadastros; isolamento de contas; validação de aulas e matrículas; faltas parciais; justificativas; pendências; filtros; cancelamento; correções com histórico; rejeição de gravação por uma tela desatualizada; transações que preservam chamada e histórico juntos; escape de HTML e CSRF.
 
-Também foram verificadas no navegador a entrada, a visão geral, a consulta de turma e a edição de cadastro. O painel e o formulário de turma foram conferidos em uma janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
+Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
 ## Estrutura
 
@@ -88,10 +96,15 @@ Também foram verificadas no navegador a entrada, a visão geral, a consulta de 
 - `diary/catalog.py`: definição dos cadastros disponíveis.
 - `diary/views.py`: painel, listagens, criação, edição e detalhe da turma.
 - `diary/tests.py`: testes das regras e do isolamento de dados.
+- `diary/teaching_forms.py` e `diary/teaching_views.py`: telas de aulas, chamadas e frequência.
+- `diary/teaching_services.py`: cálculos, gravações atômicas, controle de versão e histórico.
+- `diary/tests_teaching.py`: testes da etapa de aulas e frequência.
 - `templates/`: interface em português.
 - `static/diary/`: estilos responsivos e ícone.
 - `docs/ARQUITETURA.md`: decisões e vínculos do modelo.
 - `PLANO_DO_PROJETO.md`: progresso e próxima etapa.
+
+Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar ao GitHub. Aguardar confirmação do usuário antes de começar a seguinte.
 
 ## Preparação para produção — etapa futura
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Enrollment
+from .models import Classroom, Enrollment
 
 
 class RegistrationForm(UserCreationForm):
@@ -26,6 +26,15 @@ class OwnedModelForm(forms.ModelForm):
         if isinstance(self.instance, Enrollment) and self.instance.pk:
             self.fields["student"].disabled = True
             self.fields["classroom"].disabled = True
+        if isinstance(self.instance, Enrollment):
+            self.fields["starts_on"].required = True
+
+    def clean(self):
+        cleaned = super().clean()
+        if isinstance(self.instance, Classroom) and self.instance.pk and "subjects" in cleaned:
+            if self.instance.lessons.exclude(subject__in=cleaned["subjects"]).exists():
+                self.add_error("subjects", "Preserve disciplinas que já possuem aulas registradas.")
+        return cleaned
 
     def _get_validation_exclusions(self):
         exclusions = super()._get_validation_exclusions()

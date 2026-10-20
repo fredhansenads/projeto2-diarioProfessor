@@ -126,7 +126,7 @@ class DiaryTests(TestCase):
         }).status_code, 302)
         self.assertEqual(self.client.post(reverse("record_create", args=["matriculas"]), {
             "student": Student.objects.get(name="Bruno Exemplo").pk,
-            "classroom": classroom.pk, "status": "active",
+            "classroom": classroom.pk, "status": "active", "starts_on": "2027-02-01",
         }).status_code, 302)
 
     def test_forged_relations_are_rejected(self):
@@ -218,7 +218,7 @@ class DiaryTests(TestCase):
     def test_enrollment_changes_status_without_changing_student_or_class(self):
         response = self.client.post(reverse("record_edit", args=["matriculas", self.enrollment.pk]), {
             "status": "transferred", "student": self.other_student.pk,
-            "classroom": self.other_classroom.pk,
+            "classroom": self.other_classroom.pk, "starts_on": "2026-02-01", "ends_on": "2026-04-01",
         })
         self.assertEqual(response.status_code, 302)
         self.enrollment.refresh_from_db()

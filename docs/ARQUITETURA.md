@@ -27,6 +27,11 @@ erDiagram
     TURMA }o--o{ DISCIPLINA : oferece
     TURMA ||--o{ MATRICULA : recebe
     ALUNO ||--o{ MATRICULA : possui
+    TURMA ||--o{ AULA : registra
+    DISCIPLINA ||--o{ AULA : identifica
+    AULA ||--o{ FREQUENCIA : registra
+    MATRICULA ||--o{ FREQUENCIA : participa
+    AULA ||--o{ HISTORICO : preserva
 ```
 
 Todos os registros possuem professor proprietário, data de criação e data da última alteração. Um ano letivo identifica o ano civil na conta do professor. Os períodos pertencem a uma escola e ano, permitindo calendários diferentes entre escolas.
@@ -57,7 +62,11 @@ Ao criar novas telas, APIs, importadores ou comandos, manter as mesmas verifica�
 - Anos com períodos existentes não podem ser alterados se as datas ficarem incompatíveis.
 - Relacionamentos usam proteção contra exclusão dos registros referenciados.
 
-Datas de atualização não constituem auditoria completa. O histórico detalhado de mudanças em notas e frequência será implementado junto desses módulos.
+Datas de atualização não constituem auditoria completa. Na Etapa 3 foi implementado histórico próprio de aulas e frequência com autor, momento, motivo e diferenças entre valores anteriores e novos. O histórico de notas pertence à etapa futura de avaliações.
+
+Chamadas e histórico são gravados na mesma transação. A versão da aula e um identificador do conjunto de matrículas detectam telas desatualizadas. Uma atualização condicional de versão impede sobrescrita silenciosa, inclusive no SQLite. O registro de histórico não possui tela de edição e seu modelo rejeita alterações em registros existentes.
+
+A frequência respeita as datas de entrada e saída, inclusive. Matrículas antigas mantêm datas vazias até revisão; nenhuma data real é inferida na migração. As regras de compatibilidade, cálculo e cancelamento estão em ETAPA3.md.
 
 ## Telas existentes
 
@@ -67,13 +76,15 @@ Datas de atualização não constituem auditoria completa. O histórico detalhad
 4. Criação e edição com mensagens de validação.
 5. Detalhe da turma com disciplinas e alunos matriculados.
 6. Troca de senha pelas rotas de autenticação do Django.
+7. Registro de aulas, listagem com filtros, chamada e consulta de frequência da turma.
+8. Correção de conteúdos/chamadas, cancelamento sem apagar dados e histórico de alterações.
 
 ## Limites e decisões pedagógicas abertas
 
 - Nível de ensino ainda não informado; a base permite nomes livres de turmas e disciplinas.
-- Regras de notas, recuperação, arredondamento e frequência não estão implementadas.
+- Regras de notas e recuperação ainda não estão implementadas. A frequência por aula foi confirmada e implementada; não há abono automático ou decisão de aprovação.
 - O recorte por ano civil é uma premissa inicial; calendários que atravessam anos exigirão ajuste.
 - Compartilhamento entre professores, aplicativo nativo, PWA instalável e sincronização offline não estão implementados.
 - Não houve validação de hospedagem, SMTP real ou PostgreSQL.
-- Próxima etapa: definir e implementar aulas, conteúdos e frequência, vinculados a turma, disciplina e matrícula, com preservação do histórico.
+- Próxima etapa: avaliações e notas, somente após nova autorização do usuário e definição das regras de cálculo.
 

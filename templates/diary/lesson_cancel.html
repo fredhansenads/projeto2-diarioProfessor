@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Cancelar aula · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'lesson_detail' lesson.pk %}">← Voltar para a aula</a>
+<section class="page-heading"><div><p class="eyebrow">{{ lesson.classroom.name }} · {{ lesson.subject }}</p><h1>Cancelar esta aula?</h1><p>{{ lesson.date|date:"d/m/Y" }} · {{ lesson.quantity }} aula{{ lesson.quantity|pluralize }}</p></div></section>
+<section class="panel form-panel">
+  <p>O encontro deixará de contar na frequência. O conteúdo, a chamada e o histórico permanecerão disponíveis para consulta.</p>
+  <p>Se estiver corrigindo data, disciplina ou quantidade, registre outra aula e faça uma nova chamada após o cancelamento.</p>
+  <form method="post">{% csrf_token %}{% include "includes/form_fields.html" %}<div class="form-actions"><button class="button danger" type="submit">Confirmar cancelamento</button><a class="button ghost" href="{% url 'lesson_detail' lesson.pk %}">Manter aula</a></div></form>
+</section>
+{% endblock %}

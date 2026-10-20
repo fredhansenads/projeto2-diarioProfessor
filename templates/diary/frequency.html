@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Frequência · {{ classroom.name }} · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'classroom_detail' classroom.pk %}">← {{ classroom.name }}</a>
+<section class="page-heading"><div><p class="eyebrow">{{ classroom.school }} · {{ classroom.academic_year }}</p><h1>Frequência da turma</h1><p>{{ classroom.name }} · Acompanhe presenças, faltas e chamadas pendentes.</p></div><a class="button secondary" href="{% url 'lesson_list' %}?classroom={{ classroom.pk }}">Ver aulas</a></section>
+<p class="notice">O percentual considera somente aulas com chamada registrada. <strong>Pendências não contam como presença.</strong> Faltas justificadas estão incluídas no total de faltas.</p>
+{% if missing_dates %}<p class="notice warning">Há matrículas antigas com datas pendentes. Sem entrada informada, considera-se o início do ano; matrículas encerradas sem saída não entram em novas chamadas. <a href="{% url 'record_list' 'matriculas' %}">Revisar matrículas</a>.</p>{% endif %}
+<section class="panel">
+  <form class="filter-form" method="get">{% include "includes/form_fields.html" with form=filter_form %}<div class="filter-actions"><button class="button secondary" type="submit">Consultar</button><a class="subtle-link" href="{% url 'classroom_frequency' classroom.pk %}">Limpar filtros</a></div></form>
+  <p class="muted">{{ lesson_count }} encontro{{ lesson_count|pluralize }} no filtro. Aulas canceladas são desconsideradas.</p>
+  {% if rows %}<div class="table-scroll" tabindex="0" role="region" aria-label="Frequência por aluno"><table><thead><tr><th>Aluno</th><th>Aulas no vínculo</th><th>Com chamada</th><th>Presenças</th><th>Faltas</th><th>Justificadas</th><th>Pendentes</th><th>Frequência registrada</th></tr></thead>
+  <tbody>{% for row in rows %}<tr><td>{{ row.enrollment.student }}<small class="cell-subtitle">{{ row.enrollment.get_status_display }}</small></td><td>{{ row.total }}</td><td>{{ row.recorded }}</td><td>{{ row.present }}</td><td>{{ row.absences }}</td><td>{{ row.justified }}</td><td>{% if row.pending %}<span class="tag">{{ row.pending }}</span>{% else %}0{% endif %}</td><td>{% if row.percentage is not None %}{{ row.percentage|floatformat:1 }}%{% else %}Sem chamada{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<div class="empty-state"><h2>A turma ainda não tem matrículas</h2><p>Cadastre os alunos e suas datas de entrada para acompanhar a frequência.</p></div>{% endif %}
+</section>
+{% endblock %}

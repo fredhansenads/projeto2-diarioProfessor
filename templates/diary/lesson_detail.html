@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.subject }} · {{ lesson.date|date:"d/m/Y" }} · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'lesson_list' %}?classroom={{ lesson.classroom_id }}">← Aulas de {{ lesson.classroom.name }}</a>
+<section class="page-heading">
+  <div><p class="eyebrow">{{ lesson.classroom.school }} · {{ lesson.classroom.name }}</p><h1>{{ lesson.subject }}</h1><p>{{ lesson.date|date:"d/m/Y" }} · {{ lesson.quantity }} aula{{ lesson.quantity|pluralize }} · {{ state.label }}</p></div>
+  {% if not lesson.is_cancelled %}<div class="toolbar"><a class="button secondary" href="{% url 'lesson_edit' lesson.pk %}">Corrigir aula</a><a class="button primary" href="{% url 'attendance_form' lesson.pk %}">{% if state.saved %}Revisar chamada{% else %}Fazer chamada{% endif %}</a></div>{% endif %}
+</section>
+{% if lesson.is_cancelled %}<p class="notice">Aula cancelada. O conteúdo, a chamada e o histórico foram preservados, mas não entram nos totais de frequência.</p>{% endif %}
+<div class="teaching-grid">
+  <section class="panel"><p class="eyebrow">CONTEÚDO MINISTRADO</p><div class="prose">{{ lesson.content|linebreaksbr }}</div>{% if lesson.notes %}<hr><h2>Observações</h2><div class="prose muted">{{ lesson.notes|linebreaksbr }}</div>{% endif %}</section>
+  <aside class="panel"><p class="eyebrow">FREQUÊNCIA POR AULA</p><h2>{{ state.saved }} de {{ state.expected }} alunos</h2><p class="muted">com chamada registrada neste encontro.</p><a href="{% url 'classroom_frequency' lesson.classroom_id %}?subject={{ lesson.subject_id }}" class="subtle-link">Consultar frequência da turma →</a></aside>
+</div>
+<section class="panel section-gap">
+  <div class="section-heading"><h2>Chamada registrada</h2></div>
+  {% if records %}<div class="table-scroll" tabindex="0" role="region" aria-label="Chamada registrada"><table><thead><tr><th>Aluno</th><th>Faltas</th><th>Justificadas</th><th>Justificativa</th></tr></thead><tbody>{% for record in records %}<tr><td>{{ record.enrollment.student }}</td><td>{{ record.absences }} / {{ lesson.quantity }}</td><td>{{ record.justified_absences }}</td><td class="prose">{{ record.justification|default:"—" }}</td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<p class="muted">A chamada ainda não foi registrada. Nenhum aluno foi considerado presente automaticamente.</p>{% endif %}
+</section>
+<section id="historico" class="panel section-gap">
+  <p class="eyebrow">REGISTROS PRESERVADOS</p><h2>Histórico de alterações</h2>
+  {% for event in history %}
+  <details class="audit-entry">
+    <summary><strong>{{ event.get_kind_display }}</strong><small>{{ event.created_at|date:"d/m/Y H:i:s" }} · {{ event.actor.get_full_name|default:event.actor.username }}</small></summary>
+    {% if event.reason %}<p><strong>Motivo:</strong> {{ event.reason }}</p>{% endif %}
+    {% for change in event.changes %}<div class="audit-change"><strong>{{ change.label }}</strong><p><span>Antes:</span> {{ change.before }}</p><p><span>Depois:</span> {{ change.after }}</p></div>{% endfor %}
+  </details>
+  {% empty %}<p class="muted">Nenhuma alteração registrada.</p>{% endfor %}
+  {% if history.paginator.num_pages > 1 %}<div class="pagination">{% if history.has_previous %}<a href="?historico={{ history.previous_page_number }}#historico">← Mais recentes</a>{% endif %}<span>Página {{ history.number }} de {{ history.paginator.num_pages }}</span>{% if history.has_next %}<a href="?historico={{ history.next_page_number }}#historico">Mais antigas →</a>{% endif %}</div>{% endif %}
+</section>
+{% if not lesson.is_cancelled %}<div class="section-gap"><a class="danger-link" href="{% url 'lesson_cancel' lesson.pk %}">Cancelar esta aula</a></div>{% endif %}
+{% endblock %}

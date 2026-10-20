@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}Chamada · {{ lesson.classroom.name }} · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'lesson_detail' lesson.pk %}">← Voltar para a aula</a>
+<section class="page-heading">
+  <div><p class="eyebrow">{{ lesson.classroom.school }} · {{ lesson.classroom.name }}</p><h1>Hora da chamada.</h1><p>{{ lesson.subject }} · {{ lesson.date|date:"d/m/Y" }} · {{ lesson.quantity }} aula{{ lesson.quantity|pluralize }}</p></div>
+  {% if form.rows %}<button type="button" class="button secondary" id="fill-present" hidden>Preencher pendentes como presentes</button>{% endif %}
+</section>
+<p class="notice">Selecione as faltas de cada aluno. Justificativas não abonam faltas automaticamente. A chamada só será gravada ao clicar em <strong>Salvar chamada</strong>.</p>
+<form method="post" id="attendance-form">
+  {% csrf_token %}
+  {% for hidden in form.hidden_fields %}{{ hidden }}{% if hidden.errors %}<div class="form-errors" role="alert">{{ hidden.errors }}</div>{% endif %}{% endfor %}
+  {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="attendance-list">
+    {% for row in form.rows %}
+    <section class="panel attendance-card">
+      <div class="attendance-student"><span class="avatar" aria-hidden="true">{{ forloop.counter }}</span><div><h2>{{ row.enrollment.student }}</h2><span class="tag {% if row.saved %}tag-green{% endif %}">{% if row.saved %}Chamada registrada{% else %}Pendente{% endif %}</span></div></div>
+      <div class="attendance-fields">
+        {% include "includes/single_field.html" with field=row.absences %}
+        {% include "includes/single_field.html" with field=row.justified %}
+        {% include "includes/single_field.html" with field=row.note %}
+      </div>
+      {% if not row.enrollment.starts_on %}<p class="help-text">Matrícula antiga sem data de entrada: considera o início do ano. <a href="{% url 'record_edit' 'matriculas' row.enrollment.pk %}">Revisar matrícula</a></p>{% endif %}
+    </section>
+    {% empty %}<section class="panel empty-state"><h2>Sem alunos matriculados nesta data</h2><p>Revise as matrículas e as datas de entrada e saída antes de fazer a chamada.</p><a class="button secondary" href="{% url 'record_list' 'matriculas' %}">Ver matrículas</a></section>{% endfor %}
+  </div>
+  {% if form.rows %}<section class="panel section-gap">{% include "includes/single_field.html" with field=form.reason %}<div class="form-actions"><button type="submit" class="button primary">Salvar chamada</button><a class="button ghost" href="{% url 'lesson_detail' lesson.pk %}">Voltar sem salvar</a></div></section>{% endif %}
+</form>
+<script src="{% static 'diary/attendance.js' %}" defer></script>
+{% endblock %}

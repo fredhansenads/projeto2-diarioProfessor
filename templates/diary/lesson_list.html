@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Aulas e chamada · Diário do Professor{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">ROTINA DE ENSINO</p><h1>Aulas e chamada</h1><p>Conteúdos ministrados, presenças e faltas em um só lugar.</p></div><a class="button primary" href="{% url 'lesson_choose' %}">+ Registrar aula</a></section>
+<section class="panel">
+  <form class="filter-form" method="get">
+    {% include "includes/form_fields.html" with form=filter_form %}
+    <div class="filter-actions"><button class="button secondary" type="submit">Filtrar aulas</button><a class="subtle-link" href="{% url 'lesson_list' %}">Limpar filtros</a></div>
+  </form>
+  {% if items %}
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Aulas registradas">
+    <table><thead><tr><th>Data</th><th>Turma / disciplina</th><th>Aulas</th><th>Chamada</th><th><span class="sr-only">Ações</span></th></tr></thead>
+    <tbody>{% for item in items %}<tr>
+      <td>{{ item.lesson.date|date:"d/m/Y" }}</td>
+      <td>{{ item.lesson.classroom.name }}<small class="cell-subtitle">{{ item.lesson.subject }} · {{ item.lesson.classroom.school }}</small></td>
+      <td>{{ item.lesson.quantity }}</td>
+      <td><span class="tag {% if item.state.saved and item.state.saved == item.state.expected and not item.lesson.is_cancelled %}tag-green{% endif %}">{{ item.state.label }}</span></td>
+      <td class="actions"><a href="{% url 'lesson_detail' item.lesson.pk %}">Abrir<span class="sr-only"> {{ item.lesson }}</span></a>{% if not item.lesson.is_cancelled %}<a href="{% url 'attendance_form' item.lesson.pk %}">Chamada<span class="sr-only"> {{ item.lesson }}</span></a>{% endif %}</td>
+    </tr>{% endfor %}</tbody></table>
+  </div>
+  <div class="pagination"><span>{{ page_obj.paginator.count }} encontro{{ page_obj.paginator.count|pluralize }}</span><div>{% if page_obj.has_previous %}<a href="?{{ filter_query }}&page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}<span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a href="?{{ filter_query }}&page={{ page_obj.next_page_number }}">Próxima →</a>{% endif %}</div></div>
+  {% else %}<div class="empty-state"><h2>Nenhuma aula encontrada</h2><p>Registre uma aula ou revise os filtros selecionados.</p></div>{% endif %}
+</section>
+{% endblock %}

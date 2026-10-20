@@ -4,6 +4,11 @@
 <a class="back-link" href="{% url 'record_list' 'turmas' %}">← Voltar para turmas</a>
 <section class="page-heading"><div><p class="eyebrow">{{ classroom.school.name }}</p><h1>{{ classroom.name }}</h1><p>{{ classroom.academic_year }} · {{ classroom.get_shift_display }}</p></div><a class="button secondary" href="{% url 'record_edit' 'turmas' classroom.pk %}">Editar turma</a></section>
 <div class="subject-tags">{% for subject in subjects %}<span class="tag">{{ subject.name }}</span>{% empty %}<p class="muted">Nenhuma disciplina vinculada. Edite a turma para adicionar.</p>{% endfor %}</div>
+<div class="toolbar classroom-toolbar">
+  <a class="button primary" href="{% url 'lesson_create' classroom.pk %}">+ Registrar aula</a>
+  <a class="button secondary" href="{% url 'lesson_list' %}?classroom={{ classroom.pk }}">Aulas e chamada</a>
+  <a class="button secondary" href="{% url 'classroom_frequency' classroom.pk %}">Consultar frequência</a>
+</div>
 <section class="panel"><div class="section-heading"><h2>Alunos da turma</h2><a class="button primary" href="{% url 'record_create' 'matriculas' %}">+ Matricular aluno</a></div>
 {% if enrollments %}<div class="table-scroll" tabindex="0" role="region" aria-label="Alunos matriculados"><table><thead><tr><th scope="col">Aluno</th><th scope="col">Situação da matrícula</th><th scope="col"><span class="sr-only">Ações</span></th></tr></thead><tbody>{% for enrollment in enrollments %}<tr><td>{{ enrollment.student }}</td><td><span class="tag {% if enrollment.status == 'active' %}tag-green{% endif %}">{{ enrollment.get_status_display }}</span></td><td class="actions"><a href="{% url 'record_edit' 'matriculas' enrollment.pk %}">Editar matrícula<span class="sr-only"> de {{ enrollment.student }}</span></a></td></tr>{% endfor %}</tbody></table></div>
 {% else %}<div class="empty-state"><h3>Uma turma à espera de histórias</h3><p>Cadastre os alunos e crie suas matrículas para vê-los aqui.</p><a class="subtle-link" href="{% url 'record_create' 'alunos' %}">Cadastrar aluno →</a></div>{% endif %}</section>

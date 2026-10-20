@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Registrar aula · Diário do Professor{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'lesson_list' %}">← Voltar para aulas</a>
+<section class="page-heading"><div><p class="eyebrow">ROTINA DE ENSINO</p><h1>Onde foi a aula?</h1><p>Escolha a turma para registrar o conteúdo e fazer a chamada.</p></div></section>
+<section class="panel form-panel">
+  <form method="get">{% include "includes/form_fields.html" %}<button class="button primary" type="submit">Continuar →</button></form>
+  <p class="help-text">Ainda não tem uma turma? <a href="{% url 'record_create' 'turmas' %}">Cadastrar turma</a></p>
+</section>
+{% endblock %}

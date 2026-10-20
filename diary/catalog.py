@@ -33,8 +33,9 @@ CATALOG = {
                       ("name", "reference"), (("name", "Aluno"), ("reference", "Identificação"))),
     "matriculas": Catalog(Enrollment, "Matrículas", "matrícula",
                           "Vincule alunos às turmas. Em transferências, preserve a matrícula anterior.",
-                          ("student", "classroom", "status"),
+                          ("student", "classroom", "status", "starts_on", "ends_on"),
                           (("student", "Aluno"), ("classroom", "Turma"),
-                           ("get_status_display", "Situação"))),
+                           ("get_status_display", "Situação"), ("starts_on", "Entrada"),
+                           ("ends_on", "Saída"))),
 }
 
