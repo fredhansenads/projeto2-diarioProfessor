@@ -2,7 +2,7 @@
 
 Sistema em Python/Django para organizar o trabalho do professor no computador e no celular.
 
-**Entrega atual:** contas, cadastros, aulas, frequência, avaliações, entregas, notas configuráveis e relatórios de conselho/ficha individual com PDF, CSV e impressão. Instalação como PWA e produção pertencem às próximas etapas. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
+**Entrega atual:** contas, cadastros, aulas, frequência, avaliações, entregas, notas configuráveis, relatórios com PDF/CSV/impressão e recursos de instalação como PWA. A versão exige internet. Instalação em Android/iPhone físicos e produção ainda precisam de validação. O roteiro está em [PLANO_DO_PROJETO.md](PLANO_DO_PROJETO.md).
 
 ## Executar no Windows / PowerShell
 
@@ -39,6 +39,7 @@ Se o ambiente precisar ser recriado, use Python 3.14 e `python -m venv .venv` an
 15. Confira resultados, pendências e histórico no caderno. Regras e exemplos em [docs/ETAPA4.md](docs/ETAPA4.md).
 16. Abra **Relatórios e conselho**, selecione turma e período e consulte notas, frequência, pendências e observações.
 17. Clique no aluno para abrir a ficha individual. Use **Baixar PDF**, **Baixar CSV** ou **Versão para impressão**. Detalhes em [docs/ETAPA5.md](docs/ETAPA5.md).
+18. Abra **Usar no celular** no rodapé para ver como instalar pelo Chrome/Android ou Safari/iPhone. A instalação nos aparelhos depende do endereço HTTPS; consulte [docs/ETAPA6.md](docs/ETAPA6.md).
 
 Em uma transferência, altere a matrícula anterior para **Transferida**, informe o último dia na turma (inclusive) e crie a matrícula na nova turma. Ao mudar de ano, crie outra turma e outras matrículas. Não reutilize registros antigos para representar um novo ano.
 
@@ -90,13 +91,15 @@ Acesse `/admin/`. Essa conta administrativa deve ser restrita a pessoas de confi
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 128 testes: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos decimais, pesos, recuperação, zero versus nota ausente, dispensas, isolamento de contas, cancelamentos, correções com histórico, telas desatualizadas, rollback, escape de HTML, CSRF e relatórios/exportações. Os 25 testes da Etapa 5 conferem dados de origem, filtros, permissões, CSV e PDFs, inclusive tabelas longas e paginação.
+A suíte atual contém 135 testes Django: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações e recursos de instalação. A Etapa 6 adiciona sete testes Django e 12 testes JavaScript. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
 
 Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
 Na Etapa 4, caderno e prova foram criados no navegador; notas com vírgula e não entrega sem nota foram salvas no tamanho de celular e conferidas no caderno. Dados fictícios ficam em banco separado.
 
 Na Etapa 5, consultas e downloads PDF/CSV foram verificados no navegador; a ficha individual foi conferida no tamanho de celular. PDFs foram renderizados e inspecionados visualmente. Impressora física não foi validada. Atualize as dependências com requirements-lock.txt antes de iniciar a nova versão; requirements-test.txt acrescenta a ferramenta de conferência dos PDFs para rodar a suíte.
+
+A Etapa 6 foi conferida em tamanhos de celular com dados fictícios e com interrupção real do servidor local. Não há gravação offline: mantenha o formulário aberto ao perder conexão. Se a falha ocorrer durante o envio, consulte o registro antes de repetir. Só a mensagem retornada pelo servidor confirma o salvamento. O cache do service worker contém apenas uma página genérica de conexão, sem dados dos alunos. Limites e checklist para aparelhos reais em [docs/ETAPA6.md](docs/ETAPA6.md).
 
 ## Estrutura
 
@@ -113,8 +116,9 @@ Na Etapa 5, consultas e downloads PDF/CSV foram verificados no navegador; a fich
 - `diary/tests_grading.py`: testes da etapa de avaliações e notas.
 - `diary/report_forms.py`, `report_services.py`, `report_views.py`, `report_exports.py`: filtros, consolidação e exportação dos relatórios.
 - `diary/tests_reports.py`: conferência dos relatórios, segurança e arquivos exportados.
+- `diary/pwa_views.py`, `diary/tests_pwa.py` e `tests/pwa.test.cjs`: instalação, manifesto e testes do comportamento de conexão.
 - `templates/`: interface em português.
-- `static/diary/`: estilos responsivos e ícone.
+- `static/diary/`: estilos responsivos, ícones, avisos de formulário e service worker.
 - `docs/ARQUITETURA.md`: decisões e vínculos do modelo.
 - `PLANO_DO_PROJETO.md`: progresso e próxima etapa.
 

@@ -10,6 +10,6 @@
 </section>
 <aside class="panel setup-panel"><p class="eyebrow">PRIMEIROS PASSOS</p><h2>Prepare seu diário</h2><p class="muted">Uma base organizada para o seu ano.</p><ol class="setup-list">{% for step in steps %}<li><span class="step-number {% if step.done %}done{% endif %}" aria-label="{% if step.done %}Concluído{% else %}Passo {{ forloop.counter }}{% endif %}">{% if step.done %}✓{% else %}{{ forloop.counter }}{% endif %}</span><a href="{% url 'record_list' step.key %}">{{ step.title }}</a></li>{% endfor %}</ol><div class="note"><strong>No seu ritmo.</strong><p>Comece pelos cadastros. Você pode revisar as informações sempre que precisar.</p></div></aside>
 </div>
-<section class="roadmap-note"><a class="button primary" href="{% url 'lesson_choose' %}">+ Registrar aula e fazer chamada</a><p>Avaliações, notas e relatórios serão adicionados nas próximas etapas.</p></section>
+<section class="roadmap-note"><a class="button primary" href="{% url 'lesson_choose' %}">+ Registrar aula e fazer chamada</a><p>Acompanhe também suas <a href="{% url 'book_list' %}">avaliações e notas</a> e os <a href="{% url 'report' %}">relatórios para conselho</a>.</p></section>
 {% endblock %}
 

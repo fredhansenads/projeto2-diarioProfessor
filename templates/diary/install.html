@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Usar no celular · Diário do Professor{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">SEU DIÁRIO POR PERTO</p><h1>Leve para a sala de aula.</h1><p>Um ícone na tela inicial, com suas turmas sempre à mão.</p></div></section>
+<p class="notice">Você precisa de <strong>internet para consultar e salvar</strong>. Aguarde a confirmação de salvamento antes de sair da página.</p>
+<p id="installed-status" class="notice" hidden>Você já está usando o diário como aplicativo.</p>
+<p id="install-unavailable" class="notice warning" hidden>A instalação precisa de um endereço HTTPS. No computador, localhost também permite testes. Use o endereço seguro da escola quando ele estiver disponível.</p>
+<button id="install-app" class="button primary" type="button" hidden>Instalar Diário do Professor</button>
+<div class="install-grid section-gap">
+  <section class="panel"><h2>Android · Chrome</h2><ol><li>Abra o endereço do diário no Chrome.</li><li>Toque em <strong>Instalar Diário do Professor</strong>, quando o botão aparecer, ou abra o menu ⋮ do navegador.</li><li>Escolha <strong>Instalar app</strong> ou <strong>Adicionar à tela inicial</strong> e confirme.</li></ol></section>
+  <section class="panel"><h2>iPhone · Safari</h2><ol><li>Abra o endereço do diário no Safari.</li><li>Abra o menu e toque em <strong>Compartilhar</strong>.</li><li>Escolha <strong>Adicionar à Tela de Início</strong>. Se aparecer, mantenha <strong>Abrir como App da Web</strong> ativado.</li><li>Toque em <strong>Adicionar</strong>.</li></ol></section>
+</div>
+<section class="panel section-gap"><h2>Antes de começar</h2><p>Entre com a mesma conta usada no computador. Os dados ficam no servidor e aparecem nos dois dispositivos.</p><p>Ao ficar sem conexão, mantenha o formulário aberto. Não há salvamento offline. Se a conexão cair durante o envio, confira o registro quando voltar antes de tentar novamente.</p><p>Para receber uma atualização do aplicativo, salve seu trabalho, feche as janelas do diário e abra novamente.</p><a class="button secondary" href="{% url 'dashboard' %}">Abrir meu diário</a></section>
+{% endblock %}

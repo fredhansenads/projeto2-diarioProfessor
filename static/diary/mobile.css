@@ -1,0 +1,23 @@
+.install-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.install-grid li {margin:14px 0}
+.install-grid ol {padding-left:24px}
+#connection-status {margin-bottom:22px}
+.save-status {margin:12px 0;font-size:14px;overflow-wrap:anywhere}
+.table-hint {color:var(--muted);font-size:12px;margin:8px 0}
+.table-scroll {position:relative}
+.sidebar {overflow-y:auto}
+@media(max-width:760px) {
+  body {padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  .sidebar {padding-top:max(18px,env(safe-area-inset-top))}
+  .page-footer {padding-bottom:max(24px,env(safe-area-inset-bottom))}
+  .install-grid {grid-template-columns:minmax(0,1fr)}
+  input:not([type=checkbox]),select,textarea {font-size:16px;min-width:0;max-width:100%}
+  .nav-item,.text-button,.actions a,.back-link,.page-footer a {min-height:44px;display:inline-flex;align-items:center}
+  .button {max-width:100%;white-space:normal}
+  .page-heading>div,.section-heading>div {min-width:0;overflow-wrap:anywhere}
+  .section-heading {flex-wrap:wrap}
+  .form-actions>.button {flex:1 1 140px}
+  .table-scroll {max-width:100%;overscroll-behavior-x:contain}
+  .logout-form {top:max(18px,env(safe-area-inset-top))}
+}
+@media print {#connection-status,.save-status,.table-hint {display:none!important}}

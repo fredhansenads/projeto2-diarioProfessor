@@ -10,7 +10,7 @@ O usuário autorizou o início do projeto. Para avançar sem bloquear a base, fo
 - Interface responsiva em HTML/CSS, sem dependência de serviços externos para fontes ou scripts.
 - Contas de professores com autenticação do Django e senha armazenada como hash.
 - SQLite no desenvolvimento; configuração preparada para PostgreSQL.
-- Funcionamento conectado. Sem cache offline ou service worker nesta etapa.
+- Funcionamento conectado aprovado na Etapa 6. Service worker com cache exclusivo de página genérica de conexão; nenhum registro pedagógico é armazenado para uso offline.
 
 ## Vínculos
 
@@ -94,12 +94,16 @@ Cadernos são únicos por turma/disciplina/período e guardam regras configuráv
 
 A Etapa 5 adiciona consultas sem novas tabelas. ReportFilterForm valida conta e compatibilidade dos vínculos; report_services monta os dados chamando grade_summary e frequency_rows, preservando as regras das etapas anteriores. Um mesmo conjunto de dados alimenta HTML, impressão, PDF e CSV. Downloads são privados e sem cache. ReportLab gera PDFs no servidor; CSV usa a biblioteca padrão, com proteção contra fórmulas. pypdf é dependência exclusiva dos testes de exportação. Detalhes e limites em ETAPA5.md.
 
+## Experiência no celular
+
+A Etapa 6 adiciona manifesto, ícones e instalação como PWA, com instruções para Android/Chrome e iPhone/Safari. O worker na raiz intercepta somente navegações da mesma origem e usa a rede; falhas de transporte retornam uma página genérica com status 503. Nenhum POST é repetido ou enfileirado. O script de interface bloqueia envios quando o navegador indica offline e informa alterações não enviadas; as gravações continuam nos formulários tradicionais do Django. Atualizações do worker aguardam o fechamento das janelas anteriores. Não há alteração de banco nesta etapa. Regras, limitações e homologação pendente em ETAPA6.md.
+
 ## Limites e decisões pedagógicas abertas
 
 - Nível de ensino ainda não informado; a base permite nomes livres de turmas e disciplinas.
 - Regras de notas e recuperação configuráveis implementadas conforme ETAPA4.md; não há fechamento anual, múltiplas recuperações ou decisão oficial de aprovação. Frequência não aplica abono automático.
 - O recorte por ano civil é uma premissa inicial; calendários que atravessam anos exigirão ajuste.
-- Compartilhamento entre professores, aplicativo nativo, PWA instalável e sincronização offline não estão implementados.
+- Compartilhamento entre professores, aplicativo nativo e sincronização offline não estão implementados. PWA preparado; instalação e uso em aparelhos Android/iPhone reais aguardam homologação com HTTPS.
 - Não houve validação de hospedagem, SMTP real ou PostgreSQL.
-- Próxima etapa: experiência no celular/PWA, somente após nova autorização do usuário.
+- Próxima etapa: validação e preparação para produção (Etapa 7), somente após nova autorização do usuário; incluir a homologação física pendente da Etapa 6.
 
