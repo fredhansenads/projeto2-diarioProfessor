@@ -130,7 +130,7 @@ Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar 
 
 ## Etapa 7 — preparação local validada, implantação pendente
 
-O usuário informou Locaweb, Hospedagem de Sites compartilhada, e o subdomínio `diarioprofessor.santustech.com.br`. A compatibilidade desse plano com a aplicação ainda precisa ser confirmada pelo provedor. Há uma mensagem pronta para o suporte em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
+O usuário informou Locaweb, Hospedagem Compartilhada Linux GO, e o subdomínio `diarioprofessor.santustech.com.br`. A compatibilidade desse plano com a aplicação ainda precisa ser confirmada pelo provedor. Há uma mensagem pronta para o suporte em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
 
 O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 

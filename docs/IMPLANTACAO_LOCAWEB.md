@@ -1,16 +1,18 @@
 # Implantação — Diário do Professor / Locaweb
 
-Atualizado em 21/10/2026. Destino informado pelo proprietário: **Hospedagem de Sites compartilhada**, subdomínio **diarioprofessor.santustech.com.br**.
+Atualizado em 21/10/2026. Destino informado pelo proprietário: **Hospedagem Compartilhada Linux GO**, subdomínio **diarioprofessor.santustech.com.br**.
 
 **Situação:** preparação e testes locais realizados. Não houve acesso à conta da Locaweb, alteração de DNS, envio de arquivos, contratação, abertura de chamado ou publicação. A compatibilidade do plano compartilhado ainda não foi confirmada. Não basta enviar os arquivos Python por FTP.
 
 ## Confirmação necessária do provedor
 
-A documentação pública consultada da Locaweb descreve bancos PostgreSQL na Hospedagem de Sites, mas não confirma a versão de Python e o mecanismo WSGI disponíveis no plano contratado. A página de VPS descreve um ambiente administrável; isso é outro produto, não prova compatibilidade da hospedagem compartilhada. Não foi decidido nem contratado upgrade.
+O proprietário confirmou o nome exato do plano: **Hospedagem Compartilhada Linux GO**. Na [proposta comercial pública da Locaweb](https://sources.locaweb.com.br/site/downloads/proposta_hospedagem.pdf), consultada em 21/10/2026, a página 5 lista cinco bancos MySQL para o GO; PostgreSQL aparece nos planos II e III. A página 4 menciona PHP, sem confirmar Python/Django ou WSGI.
+
+Isso indica que os recursos anunciados para o GO não atendem integralmente à configuração atual do projeto. A proposta pública não substitui a confirmação do contrato específico, que pode ter condições diferentes. Confirmar com o suporte tanto a execução Python quanto o banco antes de preparar a implantação. Apenas trocar PostgreSQL por MySQL não resolveria a execução da aplicação; qualquer mudança de banco exigiria adaptação e testes. Manter Python/Django e PostgreSQL nesta entrega. Não foi decidido nem contratado upgrade.
 
 Texto pronto para o proprietário enviar ao suporte:
 
-> Tenho Hospedagem de Sites compartilhada na Locaweb e quero executar uma aplicação Django em diarioprofessor.santustech.com.br. A versão validada usa Python 3.14, Django 5.2, PostgreSQL e dependências instaladas por pip em ambiente virtual. O plano permite essa versão de Python e uma aplicação WSGI persistente (Passenger, mod_wsgi ou processo supervisionado)? Qual é a versão do PostgreSQL, o limite de conexões e a disponibilidade de TLS e de pg_dump/pg_restore? Posso executar comandos de migração, collectstatic e tarefas agendadas por SSH? Como configurar variáveis secretas fora do diretório público, HTTPS do subdomínio, reinício da aplicação e logs? Há SMTP autenticado com TLS e backups restauráveis? Se Python 3.14 não estiver disponível, informem as versões suportadas para avaliarmos e testarmos a compatibilidade antes de alterar o projeto.
+> Tenho Hospedagem Compartilhada Linux GO na Locaweb e quero executar uma aplicação Django em diarioprofessor.santustech.com.br. A versão validada usa Python 3.14, Django 5.2, PostgreSQL e dependências instaladas por pip em ambiente virtual. O plano permite essa versão de Python e uma aplicação WSGI persistente (Passenger, mod_wsgi ou processo supervisionado)? Meu contrato inclui PostgreSQL? A proposta pública lista apenas MySQL para o GO. Se PostgreSQL estiver disponível no meu contrato, qual é a versão, o limite de conexões e a disponibilidade de TLS e de pg_dump/pg_restore? Posso executar comandos de migração, collectstatic e tarefas agendadas por SSH? Como configurar variáveis secretas fora do diretório público, HTTPS do subdomínio, reinício da aplicação e logs? Há SMTP autenticado com TLS e backups restauráveis? Se Python 3.14 não estiver disponível, informem as versões suportadas para avaliarmos e testarmos a compatibilidade antes de alterar o projeto.
 
 Não compartilhar senhas ou chaves na conversa. A resposta técnica do suporte deve orientar os arquivos específicos do servidor. Se o plano não oferecer os recursos, apresentar alternativas ao proprietário antes de qualquer mudança contratual. Não usar um banco do plano compartilhado a partir de outro provedor sem confirmar as regras contratuais e de acesso.
 

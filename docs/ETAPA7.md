@@ -5,7 +5,7 @@ Data: 21/10/2026. **Em andamento: preparação local entregue; publicação não
 ## Decisões do proprietário
 
 - Etapa 7 autorizada.
-- Hospedagem de Sites **compartilhada da Locaweb**.
+- **Hospedagem Compartilhada Linux GO da Locaweb**.
 - Subdomínio: **diarioprofessor.santustech.com.br**.
 - Contas criadas **somente pelo administrador**.
 - Permanecem as decisões anteriores: Python, internet obrigatória, Android e iPhone, dados isolados por professor, aprovação antes de avançar de etapa.
@@ -40,7 +40,7 @@ São 150 casos Django executados em cada banco, não 300 casos distintos. Os doi
 
 ## O que ainda impede declarar pronto para uso real
 
-- Confirmar com a Locaweb Python/WSGI persistente, PostgreSQL e recursos operacionais do plano compartilhado. A documentação pública consultada não certifica essa combinação no plano do proprietário.
+- Confirmar com a Locaweb Python/WSGI persistente, PostgreSQL e recursos operacionais do plano compartilhado. A proposta pública lista MySQL para o GO e não confirma Python/WSGI; conferir as condições do contrato específico conforme IMPLANTACAO_LOCAWEB.md.
 - Preparar a infraestrutura confirmada, verificar HTTPS real/DNS, supervisão do processo e confiança do proxy.
 - Configurar e testar SMTP com destinatário autorizado.
 - Agendar e verificar backups fora do servidor, alertas e restauração no ambiente contratado; definir responsáveis e política de retenção.
