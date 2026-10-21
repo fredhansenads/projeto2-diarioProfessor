@@ -1,6 +1,6 @@
 # Arquitetura inicial e decisões de implementação
 
-Data: 19/10/2026.
+Criado em 19/10/2026; atualizado em 21/10/2026.
 
 O usuário autorizou o início do projeto. Para avançar sem bloquear a base, foram adotadas as premissas abaixo. As regras pedagógicas ainda devem ser detalhadas antes das respectivas funcionalidades.
 
@@ -9,7 +9,7 @@ O usuário autorizou o início do projeto. Para avançar sem bloquear a base, fo
 - Monólito Django com páginas renderizadas no servidor.
 - Interface responsiva em HTML/CSS, sem dependência de serviços externos para fontes ou scripts.
 - Contas de professores com autenticação do Django e senha armazenada como hash.
-- SQLite no desenvolvimento; configuração preparada para PostgreSQL.
+- SQLite no desenvolvimento; aplicação e backup/restauração validados em PostgreSQL 18 local.
 - Funcionamento conectado aprovado na Etapa 6. Service worker com cache exclusivo de página genérica de conexão; nenhum registro pedagógico é armazenado para uso offline.
 
 ## Vínculos
@@ -79,7 +79,7 @@ Cadernos são únicos por turma/disciplina/período e guardam regras configuráv
 
 ## Telas existentes
 
-1. Entrada, criação de conta e recuperação de senha.
+1. Entrada e recuperação de senha; contas criadas pelo administrador em `/admin/`.
 2. Visão geral com contagens reais, turmas e primeiros passos.
 3. Lista com busca e paginação para cada cadastro.
 4. Criação e edição com mensagens de validação.
@@ -98,12 +98,20 @@ A Etapa 5 adiciona consultas sem novas tabelas. ReportFilterForm valida conta e 
 
 A Etapa 6 adiciona manifesto, ícones e instalação como PWA, com instruções para Android/Chrome e iPhone/Safari. O worker na raiz intercepta somente navegações da mesma origem e usa a rede; falhas de transporte retornam uma página genérica com status 503. Nenhum POST é repetido ou enfileirado. O script de interface bloqueia envios quando o navegador indica offline e informa alterações não enviadas; as gravações continuam nos formulários tradicionais do Django. Atualizações do worker aguardam o fechamento das janelas anteriores. Não há alteração de banco nesta etapa. Regras, limitações e homologação pendente em ETAPA6.md.
 
-## Limites e decisões pedagógicas abertas
+## Operação e implantação
+
+A Etapa 7 está autorizada e em andamento. Cadastro público desativado por padrão; a configuração de produção rejeita sua habilitação. Django Axes limita as tentativas por combinação de usuário e IP: cinco falhas causam bloqueio por 15 minutos. O IP vem de REMOTE_ADDR; somente um proxy explicitamente confiável pode normalizar os cabeçalhos no Waitress. Formulários continuam protegidos por CSRF, com páginas de erro sem detalhes internos.
+
+WhiteNoise entrega os arquivos estáticos coletados com nomes versionados em produção. `serve.py` inicia o Waitress em endereço local; a hospedagem deve oferecer um mecanismo de execução persistente e HTTPS. `/saude/` verifica a conexão com o banco sem expor detalhes. Verificações de implantação exigem PostgreSQL, SMTP configurado, domínio explícito e cadastro público fechado; não substituem testes reais de conectividade e certificado.
+
+Os comandos `backup_diary` e `restore_diary` usam backup consistente do SQLite ou pg_dump/pg_restore no PostgreSQL, com manifesto SHA-256. Restauram somente em destino novo e recusam sobrescrita. Agendamento, retenção e cópias externas ainda dependem da hospedagem. A migração dos dados reais de SQLite para PostgreSQL é uma atividade separada, ainda pendente. Procedimentos em OPERACAO.md; validações em ETAPA7.md.
+
+## Limites e decisões abertas
 
 - Nível de ensino ainda não informado; a base permite nomes livres de turmas e disciplinas.
 - Regras de notas e recuperação configuráveis implementadas conforme ETAPA4.md; não há fechamento anual, múltiplas recuperações ou decisão oficial de aprovação. Frequência não aplica abono automático.
 - O recorte por ano civil é uma premissa inicial; calendários que atravessam anos exigirão ajuste.
 - Compartilhamento entre professores, aplicativo nativo e sincronização offline não estão implementados. PWA preparado; instalação e uso em aparelhos Android/iPhone reais aguardam homologação com HTTPS.
-- Não houve validação de hospedagem, SMTP real ou PostgreSQL.
-- Próxima etapa: validação e preparação para produção (Etapa 7), somente após nova autorização do usuário; incluir a homologação física pendente da Etapa 6.
+- PostgreSQL 18 foi validado localmente; hospedagem, HTTPS e SMTP real permanecem pendentes.
+- Continuar a Etapa 7 confirmando a compatibilidade da Locaweb compartilhada com Python/Django e execução WSGI persistente; incluir a homologação física pendente da Etapa 6. Ver IMPLANTACAO_LOCAWEB.md. O sistema ainda não foi disponibilizado em produção.
 

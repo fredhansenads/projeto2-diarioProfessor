@@ -14,7 +14,7 @@ Na pasta do projeto, use o ambiente virtual já existente:
 .\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
 ```
 
-Abra **http://127.0.0.1:8000/** e clique em **Criar minha conta**. Não há usuário ou senha padrão.
+Crie o primeiro administrador com `python manage.py createsuperuser`, usando o Python do ambiente virtual. Abra **http://127.0.0.1:8000/admin/** para cadastrar as contas dos professores, sem permissões administrativas. Não há usuário ou senha padrão; o cadastro público está desativado.
 
 Para parar o servidor, use Ctrl+C no terminal. Não é necessário ativar o ambiente virtual para executar esses comandos.
 
@@ -22,7 +22,7 @@ Se o ambiente precisar ser recriado, use Python 3.14 e `python -m venv .venv` an
 
 ## Primeiro uso
 
-1. Crie sua conta de professor.
+1. Entre com a conta de professor criada pelo administrador.
 2. Cadastre uma escola e o ano letivo.
 3. Cadastre os períodos de cada escola, com suas datas.
 4. Cadastre as disciplinas.
@@ -73,13 +73,13 @@ Para envio real, configure `EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBa
 
 ### Administração
 
-A conta normal do professor é criada pela interface. Se precisar administrar contas de usuários pelo Django:
+Somente o administrador cria contas nesta versão. Para criar o primeiro administrador:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py createsuperuser
 ```
 
-Acesse `/admin/`. Essa conta administrativa deve ser restrita a pessoas de confiança. Os cadastros pedagógicos são gerenciados nas telas do diário, que filtram os dados pelo professor.
+Acesse `/admin/`. Ao criar professores, mantenha desmarcados os privilégios de equipe e superusuário. Essa conta administrativa deve ser restrita a pessoas de confiança. Os cadastros pedagógicos são gerenciados nas telas do diário, que filtram os dados pelo professor. Contas existentes continuam válidas. Procedimentos em [docs/OPERACAO.md](docs/OPERACAO.md).
 
 ## Verificação
 
@@ -91,7 +91,7 @@ Acesse `/admin/`. Essa conta administrativa deve ser restrita a pessoas de confi
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 135 testes Django: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações e recursos de instalação. A Etapa 6 adiciona sete testes Django e 12 testes JavaScript. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
+A suíte atual contém 150 testes Django, aprovados tanto em SQLite quanto em PostgreSQL 18 local: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações, instalação, segurança e recuperação. Também passaram os 12 testes JavaScript da PWA. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
 
 Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
@@ -117,6 +117,10 @@ A Etapa 6 foi conferida em tamanhos de celular com dados fictícios e com interr
 - `diary/report_forms.py`, `report_services.py`, `report_views.py`, `report_exports.py`: filtros, consolidação e exportação dos relatórios.
 - `diary/tests_reports.py`: conferência dos relatórios, segurança e arquivos exportados.
 - `diary/pwa_views.py`, `diary/tests_pwa.py` e `tests/pwa.test.cjs`: instalação, manifesto e testes do comportamento de conexão.
+- `diary/security.py`, `checks.py` e `tests_operations.py`: proteção de acesso, diagnóstico de produção e testes operacionais.
+- `diary/backups.py` e `diary/management/commands/`: backup e restauração em destino novo.
+- `serve.py` e `deploy/production.env.example`: servidor Waitress e modelo de configuração de produção.
+- `docs/ETAPA7.md`, `docs/IMPLANTACAO_LOCAWEB.md` e `docs/OPERACAO.md`: validações, pendências de hospedagem e operação.
 - `templates/`: interface em português.
 - `static/diary/`: estilos responsivos, ícones, avisos de formulário e service worker.
 - `docs/ARQUITETURA.md`: decisões e vínculos do modelo.
@@ -124,19 +128,21 @@ A Etapa 6 foi conferida em tamanhos de celular com dados fictícios e com interr
 
 Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar ao GitHub. Aguardar confirmação do usuário antes de começar a seguinte.
 
-## Preparação para produção — etapa futura
+## Etapa 7 — preparação local validada, implantação pendente
 
-Há configuração para PostgreSQL por variáveis de ambiente; a implantação e o banco PostgreSQL ainda não foram testados.
+O usuário informou Locaweb, Hospedagem de Sites compartilhada, e o subdomínio `diarioprofessor.santustech.com.br`. A compatibilidade desse plano com a aplicação ainda precisa ser confirmada pelo provedor. Há uma mensagem pronta para o suporte em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
 
-O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Antes de disponibilizar o sistema, será necessário:
+O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 
-- Provisionar e validar PostgreSQL, migrações e backups com restauração.
+- Confirmar a hospedagem e provisionar PostgreSQL; planejar separadamente a migração dos dados reais do SQLite.
+- Agendar backups, guardar cópias fora do servidor e testar a recuperação no ambiente contratado.
 - Definir `DJANGO_DEBUG=False`, uma `DJANGO_SECRET_KEY` própria e `DJANGO_ALLOWED_HOSTS` com o domínio.
 - Configurar HTTPS, proxy, serviço da aplicação e entrega de arquivos estáticos.
 - Configurar e testar o serviço de e-mail.
-- Definir a política de criação de contas e proteção contra tentativas repetidas de autenticação.
 - Executar `manage.py check --deploy` com as configurações reais e resolver os apontamentos.
-- Validar o ciclo completo da aplicação antes de disponibilizar a versão.
+- Homologar Android/iPhone físicos e o uso pelo professor; obter autorização para disponibilizar a versão.
+
+A Etapa 7 continua em andamento. Resultados e limites estão em [docs/ETAPA7.md](docs/ETAPA7.md); backup, restauração e atualização estão em [docs/OPERACAO.md](docs/OPERACAO.md).
 
 O servidor `runserver` usado acima serve ao desenvolvimento local. O endereço `127.0.0.1` só abre neste computador; acesso pelo celular físico dependerá de configuração de rede ou hospedagem.
 

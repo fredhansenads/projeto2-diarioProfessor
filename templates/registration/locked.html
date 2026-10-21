@@ -1,0 +1,2 @@
+{% extends "registration/auth_base.html" %}
+{% block auth_content %}<h2>Vamos aguardar um pouco.</h2><p>Houve várias tentativas de entrada sem sucesso. Aguarde 15 minutos antes de tentar novamente ou procure o administrador.</p><a href="{% url 'login' %}">Voltar para entrar</a>{% endblock %}

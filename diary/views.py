@@ -1,4 +1,5 @@
 from datetime import date
+from django.conf import settings
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -23,10 +24,12 @@ from .models import AcademicYear, Classroom, Enrollment, School, Student, Subjec
 def register(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
+    if not settings.PUBLIC_REGISTRATION_ENABLED:
+        return render(request, "registration/registration_closed.html", status=403)
     form = RegistrationForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
-        login(request, user)
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         messages.success(request, "Sua conta está pronta. Vamos organizar seu diário!")
         return redirect("dashboard")
     return render(request, "registration/register.html", {"form": form})

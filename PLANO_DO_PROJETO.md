@@ -1,8 +1,8 @@
 # Plano do projeto — Diário do Professor
 
 Criado em: 19/10/2026  
-Última atualização: 20/10/2026
-Status: Etapa 6 implementada e verificada localmente; homologação em aparelhos reais pendente. Aguardar autorização antes da Etapa 7.
+Última atualização: 21/10/2026
+Status: Etapa 7 autorizada e em andamento; preparação e validação locais entregues. Hospedagem, serviços externos e homologação física pendentes.
 
 ## 1. Objetivo
 
@@ -21,6 +21,7 @@ Criar um sistema web e uma experiência de aplicativo para celular que ajudem o 
 - A Etapa 4 acrescenta cadernos, avaliações, entregas, notas e recuperação com regras configuráveis por turma/disciplina/período.
 - A Etapa 5 acrescenta relatórios de turma e aluno para conselho, com filtros, PDF, CSV e impressão.
 - A Etapa 6 acrescenta recursos de instalação como PWA e melhorias no celular; usuário confirmou Android/iPhone e internet obrigatória.
+- A Etapa 7 acrescenta contas somente pelo administrador, proteção de login, configuração de produção, backup/restauração e validação local com PostgreSQL. A disponibilização pública permanece pendente.
 - Regra de continuidade do usuário: concluir uma etapa por vez, salvar no Git e enviar ao GitHub, e sempre perguntar antes de iniciar a seguinte.
 - Premissas adotadas para iniciar: Django, contas separadas, uso conectado e interface responsiva. Regras pedagógicas específicas continuam abertas.
 
@@ -34,7 +35,7 @@ Criar um sistema web e uma experiência de aplicativo para celular que ajudem o 
 | Aplicativo inicial | PWA com interface responsiva | Instalação pelo navegador nos dispositivos compatíveis |
 | Relatórios | Impressão, PDF e CSV | Consulta, conselho de classe e apoio ao preenchimento do sistema escolar |
 
-Python/Django já é a base do backend, com HTML/CSS na interface. O desenvolvimento local utiliza SQLite; a configuração para PostgreSQL está preparada, mas ainda não foi validada nesse banco. Os recursos de instalação como PWA estão implementados; homologação em aparelhos reais e HTTPS permanecem pendentes. Aplicativo nativo nas lojas não está incluído na entrega atual.
+Python/Django já é a base do backend, com HTML/CSS na interface. O desenvolvimento local utiliza SQLite; a suíte e os procedimentos de backup/restauração também foram validados em PostgreSQL 18 local. O banco da hospedagem ainda não foi provisionado. Os recursos de instalação como PWA estão implementados; homologação em aparelhos reais e HTTPS permanecem pendentes. Aplicativo nativo nas lojas não está incluído na entrega atual.
 
 O usuário aprovou internet obrigatória nesta versão. Uma eventual versão offline exigirá nova definição de armazenamento no aparelho, sincronização, proteção dos dados locais e resolução de conflitos.
 
@@ -52,7 +53,8 @@ O início foi autorizado. As premissas abaixo permitem avançar na base; confirm
 | Quais regras de notas, pesos, arredondamento, aprovação e recuperação devem ser atendidas? | Usuário escolheu configuração por turma/disciplina/período. Cálculos e limites implementados em docs/ETAPA4.md; não há decisão oficial de aprovação |
 | A frequência será registrada por aula, por dia ou por outro critério? | Confirmada pelo usuário: por aula, com várias aulas no encontro e faltas parciais |
 | Quais informações e formatos são necessários para o conselho de classe e o sistema da escola? | Modelo geral aprovado: notas, frequência, pendências e observações por turma/disciplina/período; PDF e CSV. Modelos específicos e integração com a escola não informados |
-| Onde será hospedado e como serão mantidos e restaurados os backups? | Definir antes da implantação |
+| Onde será hospedado e como serão mantidos e restaurados os backups? | Locaweb, Hospedagem de Sites compartilhada; diarioprofessor.santustech.com.br. Compatibilidade a confirmar com o provedor. Backup/restauração local validados; agendamento e armazenamento externo pendentes |
+| Quem cria as contas? | Confirmado: somente o administrador |
 
 ## 5. Escopo proposto para a primeira versão
 
@@ -174,17 +176,19 @@ A adaptação das telas ao celular deve ocorrer desde a Etapa 1; esta etapa cons
 
 ### Etapa 7 — Validar e disponibilizar
 
-- [ ] Testar as regras críticas de notas, frequência e relatórios.
-- [ ] Verificar permissões e isolamento entre contas, quando aplicável.
-- [ ] Executar um ciclo completo com dados fictícios: cadastros, aulas, chamada, avaliações e conselho.
+- [x] Testar as regras críticas de notas, frequência e relatórios.
+- [x] Verificar permissões e isolamento entre contas, quando aplicável.
+- [x] Executar um ciclo completo com dados fictícios: cadastros, aulas, chamada, avaliações e conselho.
 - [ ] Concluir a homologação física da Etapa 6 em Android/Chrome e iPhone/Safari com HTTPS.
 - [ ] Corrigir falhas identificadas na validação com o usuário.
 - [ ] Preparar hospedagem, HTTPS e configuração de produção.
 - [ ] Configurar backups e verificar a restauração.
-- [ ] Documentar operação, atualização e recuperação do sistema.
+- [x] Documentar operação, atualização e recuperação do sistema.
 - [ ] Apresentar a versão validada para autorização de disponibilização.
 
 **Critério de conclusão:** versão validada, restauração verificada e disponibilização autorizada pelo usuário.
+
+**Entrega parcial:** 150 testes Django aprovados em SQLite e PostgreSQL 18 local, 12 testes JavaScript aprovados, restauração conferida nos dois bancos, cadastro restrito ao administrador e proteção contra tentativas de login. Modelo de produção e guias de implantação/operação criados. Backup do SQLite existente realizado antes das migrações; contagens de usuários e registros pedagógicos preservadas. Os itens de hospedagem e backups permanecem abertos porque faltam provisionamento, HTTPS, SMTP, agendamento e cópia externa. Ver docs/ETAPA7.md.
 
 ## 7. Funcionalidades reservadas para evolução
 
@@ -212,17 +216,17 @@ Não incluir automaticamente na primeira versão:
 
 ## 9. Ponto de continuidade
 
-**Etapa atual:** implementação da Etapa 6 entregue e verificada localmente; homologação física pendente.
+**Etapa atual:** Etapa 7 em andamento; preparação local validada, sem publicação.
 
-**Última entrega:** PWA com internet obrigatória, instruções Android/iPhone, ajustes de celular, avisos de alterações/envio e fallback público de conexão sem cache pedagógico.
+**Última entrega:** contas somente pelo administrador, proteção de login, verificações de produção, servidor Waitress, arquivos estáticos, backup/restauração e documentação operacional. Validações locais em SQLite e PostgreSQL 18.
 
-**Próxima ação:** perguntar se o usuário autoriza a Etapa 7 (validação e preparação para produção). Se autorizada, definir hospedagem/HTTPS e incluir a homologação física pendente da Etapa 6.
+**Próxima ação:** obter a resposta técnica da Locaweb à mensagem preparada em docs/IMPLANTACAO_LOCAWEB.md e continuar a implantação dentro da Etapa 7. Após confirmar o ambiente, configurar e validar banco, HTTPS, SMTP, backups e aparelhos físicos; apresentar a versão para autorização de disponibilização.
 
-**Autorização:** Etapa 6 autorizada, com internet obrigatória e Android/iPhone. Salvar no Git/GitHub e perguntar antes de avançar. A Etapa 7 depende de nova confirmação. Disponibilização pública não realizada.
-**Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e configuração futura para PostgreSQL.  
-**Testes da aplicação:** 135 testes Django e 12 testes JavaScript aprovados. Fluxos anteriores preservados. Na Etapa 6, chamada salva em 320 × 740 e notas salvas em 390 × 844; tabelas com rolagem própria. Servidor de teste parado e reiniciado para verificar o fallback e a retomada. Verificação usa dados fictícios em banco separado. Detalhes e limites em docs/ETAPA6.md.
+**Autorização:** Etapa 7 autorizada pelo usuário. Locaweb compartilhada e subdomínio informados; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
+**Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e PostgreSQL 18 validado localmente.
+**Testes da aplicação:** 150 testes Django aprovados em cada banco e 12 testes JavaScript aprovados. Ciclo pedagógico completo, permissões, bloqueio de login e backup/restauração conferidos. Restauração PostgreSQL comparada em 29 tabelas. Login/logout verificados no navegador com Waitress e PostgreSQL local. São testes com dados fictícios; não substituem serviços externos e aparelhos reais. Evidências e limites em docs/ETAPA7.md.
 
-**Limitações atuais:** instalação/uso em Android e iPhone físicos ainda não homologados; sem consulta ou gravação offline. E-mail de recuperação apenas no terminal por padrão; PostgreSQL, SMTP real, HTTPS e produção não validados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
+**Limitações atuais:** instalação/uso em Android e iPhone físicos ainda não homologados; sem consulta ou gravação offline. E-mail de recuperação apenas no terminal por padrão; SMTP real, HTTPS e hospedagem não validados. Compatibilidade do plano compartilhado pendente; PostgreSQL validado somente em ambiente local. Agendamento de backups e cópias externas não configurados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
 
 **Como executar:** consultar README.md e aplicar as migrações. Não há conta ou senha padrão. Matrículas antigas permanecem preservadas; revisar datas de entrada e saída. Dados fictícios de verificação usam banco temporário separado.
 
@@ -236,6 +240,7 @@ Não incluir automaticamente na primeira versão:
 | 19/10/2026 | Etapa 4 autorizada: cadernos, avaliações, entregas, notas e recuperação configuráveis; auditoria e proteção contra sobrescrita | 103 testes aprovados; criação e lançamento no navegador com dados fictícios e tamanho de celular | Salvar no Git/GitHub e solicitar autorização para a Etapa 5 |
 | 20/10/2026 | Etapa 5: relatórios de conselho e ficha individual, filtros e exportação PDF/CSV/impressão | 128 testes aprovados; downloads verificados, PDFs renderizados e ficha conferida no celular simulado | Salvar no Git/GitHub e solicitar autorização para a Etapa 6 |
 | 20/10/2026 | Etapa 6: PWA conectado, instruções Android/iPhone e revisão mobile | 135 testes Django, 12 JavaScript, salvamentos em telas pequenas e fallback com servidor parado; aparelhos reais pendentes | Salvar no Git/GitHub e solicitar autorização para a Etapa 7, levando a homologação física pendente |
+| 21/10/2026 | Etapa 7: preparação local, proteção de acesso, backup/restauração e guias de implantação/operação | 150 testes em cada banco, 12 JavaScript e restauração conferida; serviços externos pendentes | Confirmar compatibilidade com a Locaweb e continuar a Etapa 7 |
 
 ### Decisões aprovadas
 
@@ -249,5 +254,6 @@ Não incluir automaticamente na primeira versão:
 | 19/10/2026 | Executar a Etapa 4; regras de notas configuráveis por turma, disciplina e período | “sim, pode. etapa 4.” e resposta à pergunta sobre regras |
 | 20/10/2026 | Executar a Etapa 5 e utilizar modelo geral de relatório com PDF e CSV | “pode iniciar 5 etapa” e “Sim, usar esse modelo geral” |
 | 20/10/2026 | Executar a Etapa 6; internet obrigatória nesta versão; atender Android e iPhone | “pode iniciar 6 etapa” e respostas às perguntas sobre conexão e aparelhos |
+| 21/10/2026 | Executar a Etapa 7; contas somente pelo administrador; Locaweb Hospedagem de Sites compartilhada e diarioprofessor.santustech.com.br | “pode iniciar etapa 7” e respostas às perguntas de implantação |
 
-Django, SQLite local, preparação para PostgreSQL e contas isoladas foram adotados como decisões iniciais de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md e docs/ETAPA6.md.
+Django, SQLite local, PostgreSQL e contas isoladas foram adotados como decisões de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md, docs/ETAPA6.md e docs/ETAPA7.md.

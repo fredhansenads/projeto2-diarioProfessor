@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.urls import include, path
-from diary import pwa_views
+from diary import pwa_views, security
 
 urlpatterns = [
+    path("saude/", security.health, name="health"),
     path("manifest.webmanifest", pwa_views.manifest, name="manifest"),
     path("service-worker.js", pwa_views.service_worker, name="service_worker"),
     path("offline/", pwa_views.offline, name="offline"),

@@ -261,6 +261,7 @@ class DiaryTests(TestCase):
     def test_unknown_catalog_returns_not_found(self):
         self.assertEqual(self.client.get("/cadastros/desconhecido/").status_code, 404)
 
+    @override_settings(PUBLIC_REGISTRATION_ENABLED=True)
     def test_account_creation_and_login(self):
         self.client.logout()
         response = self.client.post(reverse("register"), {
@@ -276,6 +277,7 @@ class DiaryTests(TestCase):
         })
         self.assertRedirects(response, reverse("dashboard"))
 
+    @override_settings(PUBLIC_REGISTRATION_ENABLED=True)
     def test_weak_password_is_rejected(self):
         self.client.logout()
         response = self.client.post(reverse("register"), {

@@ -5,3 +5,6 @@ class DiaryConfig(AppConfig):
     name = "diary"
     verbose_name = "Diário do Professor"
 
+    def ready(self):
+        from . import checks  # noqa: F401
+

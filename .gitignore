@@ -16,4 +16,7 @@ htmlcov/
 .local-secret
 tmp/
 output/
+backups/
+*.dump
+*.backup
 
