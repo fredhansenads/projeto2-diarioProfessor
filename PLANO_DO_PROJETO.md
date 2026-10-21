@@ -53,7 +53,7 @@ O início foi autorizado. As premissas abaixo permitem avançar na base; confirm
 | Quais regras de notas, pesos, arredondamento, aprovação e recuperação devem ser atendidas? | Usuário escolheu configuração por turma/disciplina/período. Cálculos e limites implementados em docs/ETAPA4.md; não há decisão oficial de aprovação |
 | A frequência será registrada por aula, por dia ou por outro critério? | Confirmada pelo usuário: por aula, com várias aulas no encontro e faltas parciais |
 | Quais informações e formatos são necessários para o conselho de classe e o sistema da escola? | Modelo geral aprovado: notas, frequência, pendências e observações por turma/disciplina/período; PDF e CSV. Modelos específicos e integração com a escola não informados |
-| Onde será hospedado e como serão mantidos e restaurados os backups? | VPS existente na Locaweb; diarioprofessor.santustech.com.br. Sistema operacional, recursos, serviços existentes e acesso a identificar. GO descartado pelo proprietário por falta de suporte a Python/Django. Backup/restauração local validados; agendamento e armazenamento externo pendentes |
+| Onde será hospedado e como serão mantidos e restaurados os backups? | VPS existente na Locaweb; diarioprofessor.santustech.com.br. Ubuntu (versão pendente), 1 GB RAM, 2 vCPUs e 40 GB de disco; já executa outro sistema Python. Recursos livres, serviços e acesso a verificar. GO descartado pelo proprietário por falta de suporte a Python/Django. Backup/restauração local validados; agendamento e armazenamento externo pendentes |
 | Quem cria as contas? | Confirmado: somente o administrador |
 
 ## 5. Escopo proposto para a primeira versão
@@ -220,7 +220,7 @@ Não incluir automaticamente na primeira versão:
 
 **Última entrega:** contas somente pelo administrador, proteção de login, verificações de produção, servidor Waitress, arquivos estáticos, backup/restauração e documentação operacional. Validações locais em SQLite e PostgreSQL 18.
 
-**Próxima ação:** identificar sistema operacional/versão, RAM, serviços/painel existentes e método de acesso à VPS da Locaweb; preparar a configuração conforme docs/IMPLANTACAO_LOCAWEB.md e continuar a implantação dentro da Etapa 7. Após confirmar o ambiente, configurar e validar banco, HTTPS, SMTP, backups e aparelhos físicos; apresentar a versão para autorização de disponibilização.
+**Próxima ação:** obter IP/hostname, usuário/porta e método de acesso SSH, ou a saída da consulta executada pelo proprietário; conferir versão do Ubuntu, recursos livres e serviços existentes na VPS de 1 GB RAM, 2 vCPUs e 40 GB; preparar a configuração conforme docs/IMPLANTACAO_LOCAWEB.md e continuar a implantação dentro da Etapa 7. Após confirmar o ambiente, configurar e validar banco, HTTPS, SMTP, backups e aparelhos físicos; apresentar a versão para autorização de disponibilização.
 
 **Autorização:** Etapa 7 autorizada pelo usuário. VPS existente na Locaweb escolhida e subdomínio mantido; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
 **Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e PostgreSQL 18 validado localmente.
@@ -243,6 +243,7 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Etapa 7: preparação local, proteção de acesso, backup/restauração e guias de implantação/operação | 150 testes em cada banco, 12 JavaScript e restauração conferida; serviços externos pendentes | Confirmar compatibilidade com a Locaweb e continuar a Etapa 7 |
 | 21/10/2026 | Proprietário confirmou o plano Hospedagem Compartilhada Linux GO; documentação e mensagem ao suporte atualizadas | Proposta pública indica diferença de banco e não confirma Python/WSGI; contrato específico ainda precisa de confirmação | Obter resposta técnica da Locaweb antes da implantação |
 | 21/10/2026 | Proprietário informou falta de suporte a Python/Django no GO e escolheu sua VPS da Locaweb; roteiro atualizado | Alteração documental; nenhum acesso remoto ou publicação | Identificar sistema/versão, RAM, serviços existentes e acesso à VPS |
+| 21/10/2026 | Proprietário informou Ubuntu, 1 GB RAM, 2 vCPUs, disco de 40 GB e outro sistema Python em uso; consulta somente leitura preparada | Sintaxe Bash conferida; recursos livres e funcionamento na VPS ainda não verificados | Obter acesso identificado ou saída da consulta antes de definir a instalação |
 
 ### Decisões aprovadas
 

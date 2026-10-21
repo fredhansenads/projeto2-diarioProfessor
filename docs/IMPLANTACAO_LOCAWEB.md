@@ -6,9 +6,23 @@ Atualizado em 21/10/2026. Destino escolhido pelo proprietário: **VPS já existe
 
 ## Identificação da VPS antes da configuração
 
-Registrar o sistema operacional e sua versão, memória RAM, CPU, espaço livre, serviços/sites existentes e eventual painel de gerenciamento ou Docker. Essas informações definem os arquivos de serviço, portas, proxy e instalação de dependências. Não pressupor que a VPS esteja vazia nem substituir a configuração de sites existentes.
+Informações fornecidas pelo proprietário: **Ubuntu (versão ainda não informada), 1 GB de RAM, 2 vCPUs e disco de 40 GB**. A VPS já executa outro sistema Python semelhante, descrito como leve. Esses números são a capacidade informada, não uma medição de recursos livres.
 
-Solicitado ao proprietário: sistema/versão, RAM e serviços ou painel já instalados. Em seguida, identificar IP/hostname, porta e usuário de acesso SSH e se há uma chave já configurada, sem enviar senhas ou conteúdo de chaves na conversa. Confirmar o responsável pelo DNS do subdomínio e pelo SMTP. O acesso remoto só poderá ser utilizado quando o destino e o método de acesso estiverem identificados.
+Antes de instalar, conferir versão do Ubuntu, RAM disponível, swap, espaço livre, portas ocupadas, banco/proxy e como o sistema existente é iniciado. A capacidade para os dois sistemas precisa ser medida; ainda não foi validada. Preservar os ambientes virtuais, dependências, banco e serviço da aplicação existente. Evitar atualização global do Python ou substituição das configurações do proxy durante a instalação do diário.
+
+Solicitado ao proprietário: IP/hostname, usuário e porta SSH, e se há chave de acesso já configurada neste computador; alternativamente, ele pode executar a consulta no próprio terminal. Não enviar senhas nem conteúdo de chaves na conversa. O destino e o método de acesso ainda não foram informados.
+
+### Consulta inicial sem alterações
+
+O arquivo `deploy/inspecionar-vps.sh` consulta sistema, CPU, memória/swap, disco, processos por consumo de RAM (sem argumentos), versões disponíveis no PATH, portas TCP e nomes/estados dos serviços ativos. Não instala pacotes, reinicia serviços ou lê arquivos de configuração da aplicação, variáveis de ambiente, logs e credenciais. Não requer sudo.
+
+Com o arquivo disponível na VPS, executar pelo terminal Ubuntu:
+
+```bash
+bash deploy/inspecionar-vps.sh
+```
+
+Conferir a saída antes de compartilhá-la. Um programa ausente no PATH pode existir em ambiente virtual ou contêiner; será necessário identificar o serviço Python existente após essa primeira consulta. O script teve a sintaxe Bash verificada localmente, mas ainda não foi executado na VPS. Confirmar também o responsável pelo DNS do subdomínio e pelo SMTP.
 
 ## Roteiro da implantação na VPS
 
