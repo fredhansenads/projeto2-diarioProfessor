@@ -1,26 +1,31 @@
 # Implantação — Diário do Professor / Locaweb
 
-Atualizado em 21/10/2026. Destino informado pelo proprietário: **Hospedagem Compartilhada Linux GO**, subdomínio **diarioprofessor.santustech.com.br**.
+Atualizado em 21/10/2026. Destino escolhido pelo proprietário: **VPS já existente na Locaweb**, subdomínio **diarioprofessor.santustech.com.br**.
 
-**Situação:** preparação e testes locais realizados. Não houve acesso à conta da Locaweb, alteração de DNS, envio de arquivos, contratação, abertura de chamado ou publicação. A compatibilidade do plano compartilhado ainda não foi confirmada. Não basta enviar os arquivos Python por FTP.
+**Situação:** preparação e testes locais realizados; implantação na VPS ainda não executada. O proprietário informou que a Hospedagem Compartilhada Linux GO não oferece suporte a Python/Django e decidiu utilizar sua VPS. A confirmação de compatibilidade do GO deixou de ser uma pendência. Não houve acesso à VPS, alteração de DNS, envio de arquivos ou publicação.
 
-## Confirmação necessária do provedor
+## Identificação da VPS antes da configuração
 
-O proprietário confirmou o nome exato do plano: **Hospedagem Compartilhada Linux GO**. Na [proposta comercial pública da Locaweb](https://sources.locaweb.com.br/site/downloads/proposta_hospedagem.pdf), consultada em 21/10/2026, a página 5 lista cinco bancos MySQL para o GO; PostgreSQL aparece nos planos II e III. A página 4 menciona PHP, sem confirmar Python/Django ou WSGI.
+Registrar o sistema operacional e sua versão, memória RAM, CPU, espaço livre, serviços/sites existentes e eventual painel de gerenciamento ou Docker. Essas informações definem os arquivos de serviço, portas, proxy e instalação de dependências. Não pressupor que a VPS esteja vazia nem substituir a configuração de sites existentes.
 
-Isso indica que os recursos anunciados para o GO não atendem integralmente à configuração atual do projeto. A proposta pública não substitui a confirmação do contrato específico, que pode ter condições diferentes. Confirmar com o suporte tanto a execução Python quanto o banco antes de preparar a implantação. Apenas trocar PostgreSQL por MySQL não resolveria a execução da aplicação; qualquer mudança de banco exigiria adaptação e testes. Manter Python/Django e PostgreSQL nesta entrega. Não foi decidido nem contratado upgrade.
+Solicitado ao proprietário: sistema/versão, RAM e serviços ou painel já instalados. Em seguida, identificar IP/hostname, porta e usuário de acesso SSH e se há uma chave já configurada, sem enviar senhas ou conteúdo de chaves na conversa. Confirmar o responsável pelo DNS do subdomínio e pelo SMTP. O acesso remoto só poderá ser utilizado quando o destino e o método de acesso estiverem identificados.
 
-Texto pronto para o proprietário enviar ao suporte:
+## Roteiro da implantação na VPS
 
-> Tenho Hospedagem Compartilhada Linux GO na Locaweb e quero executar uma aplicação Django em diarioprofessor.santustech.com.br. A versão validada usa Python 3.14, Django 5.2, PostgreSQL e dependências instaladas por pip em ambiente virtual. O plano permite essa versão de Python e uma aplicação WSGI persistente (Passenger, mod_wsgi ou processo supervisionado)? Meu contrato inclui PostgreSQL? A proposta pública lista apenas MySQL para o GO. Se PostgreSQL estiver disponível no meu contrato, qual é a versão, o limite de conexões e a disponibilidade de TLS e de pg_dump/pg_restore? Posso executar comandos de migração, collectstatic e tarefas agendadas por SSH? Como configurar variáveis secretas fora do diretório público, HTTPS do subdomínio, reinício da aplicação e logs? Há SMTP autenticado com TLS e backups restauráveis? Se Python 3.14 não estiver disponível, informem as versões suportadas para avaliarmos e testarmos a compatibilidade antes de alterar o projeto.
+1. Inventariar o ambiente e preservar a configuração dos serviços existentes antes de qualquer mudança. Confirmar recursos disponíveis e permissões administrativas.
+2. Definir a execução da aplicação conforme o ambiente: aproveitar a infraestrutura existente quando adequada. A escolha entre serviço do sistema e contêiner fica pendente desse inventário.
+3. Preparar usuário/diretório próprios da aplicação, Python e dependências fixadas, PostgreSQL e armazenamento persistente. A versão Python 3.14.7 e o PostgreSQL 18 foram validados localmente; conferir disponibilidade e testar qualquer mudança de versão.
+4. Integrar o diário ao proxy HTTPS no subdomínio, escolhendo uma porta interna livre e mantendo aplicação e banco sem exposição pública direta. Definir a confiança do proxy conforme a topologia real.
+5. Configurar SMTP, backup agendado, cópia externa e recuperação; verificar os serviços com dados fictícios antes de migrar dados reais.
+6. Executar a sequência de homologação abaixo e a validação em aparelhos reais. Apresentar os resultados ao proprietário para autorização final de disponibilização.
 
-Não compartilhar senhas ou chaves na conversa. A resposta técnica do suporte deve orientar os arquivos específicos do servidor. Se o plano não oferecer os recursos, apresentar alternativas ao proprietário antes de qualquer mudança contratual. Não usar um banco do plano compartilhado a partir de outro provedor sem confirmar as regras contratuais e de acesso.
+Os comandos específicos de instalação, serviço, firewall e proxy serão preparados após identificar o ambiente. A troca de destino mantém Python/Django e PostgreSQL; não exige reescrever o sistema. Nenhum novo serviço foi contratado.
 
 ## Preparação disponível
 
 - `deploy/production.env.example`: modelo sem segredos, com o subdomínio informado, PostgreSQL, SMTP e cadastro público desligado.
-- `config/wsgi.py`: entrada WSGI para integração oferecida pela hospedagem.
-- `serve.py`: Waitress para ambientes que permitem processo persistente. Usa **127.0.0.1:8000** por padrão. Não é uma solução para contornar restrições do plano compartilhado.
+- `config/wsgi.py`: entrada WSGI da aplicação.
+- `serve.py`: Waitress para ambientes que permitem processo persistente. Usa **127.0.0.1:8000** por padrão. A porta definitiva depende dos serviços existentes na VPS.
 - WhiteNoise fornece os arquivos coletados, comprimidos e identificados pelo conteúdo, inclusive os do administrador. O app pressupõe publicação na raiz do subdomínio.
 - `/saude/`: testa comunicação com o banco e retorna apenas `ok` ou `unavailable`, sem detalhes internos e sem cache. Não verifica SMTP, migrações, espaço em disco ou integridade do backup.
 - `manage.py check --deploy --fail-level WARNING`: bloqueia configurações essenciais incompletas; não comprova conectividade externa.
@@ -46,8 +51,8 @@ python -m pip check
 ```
 
 6. Criar a conta administrativa com `python manage.py createsuperuser`, digitando a senha interativamente. Não há credencial padrão. Em `/admin/`, criar as contas de professores, preencher nome e e-mail correto e manter `is_staff` e `is_superuser` desligados para professores. O administrador permanece restrito a pessoas de confiança.
-7. Configurar o serviço WSGI. Se o provedor permitir Waitress supervisionado, iniciar `python serve.py` pelo supervisor do host. Quando houver exatamente um proxy reverso confiável, configurar `WAITRESS_TRUSTED_PROXY` com seu **IP exato**. O proxy deve sobrescrever os cabeçalhos de encaminhamento e ser o único acesso ao backend. Testar IP real, URLs HTTPS e ausência de redirecionamento em ciclo. O programa recusa `*`; não habilitar confiança irrestrita em cabeçalhos enviados pela internet.
-8. Confirmar DNS, certificado válido e renovação HTTPS do subdomínio com o provedor. Configurar limites de requisições no proxy/serviço da hospedagem, inclusive recuperação de senha, sem impedir acesso normal dos professores da mesma rede. A limitação implementada no aplicativo cobre login de professor e administrador por combinação usuário/IP; não substitui proteção contra ataques distribuídos ou sobrecarga.
+7. Configurar o serviço WSGI. Se o inventário definir execução direta com Waitress supervisionado, iniciar `python serve.py` pelo supervisor do host. Quando houver exatamente um proxy reverso confiável, configurar `WAITRESS_TRUSTED_PROXY` com seu **IP exato**. O proxy deve sobrescrever os cabeçalhos de encaminhamento e ser o único acesso ao backend. Testar IP real, URLs HTTPS e ausência de redirecionamento em ciclo. O programa recusa `*`; não habilitar confiança irrestrita em cabeçalhos enviados pela internet.
+8. Confirmar DNS, certificado válido e renovação HTTPS do subdomínio no ambiente escolhido. Configurar limites de requisições no proxy/serviço da hospedagem, inclusive recuperação de senha, sem impedir acesso normal dos professores da mesma rede. A limitação implementada no aplicativo cobre login de professor e administrador por combinação usuário/IP; não substitui proteção contra ataques distribuídos ou sobrecarga.
 9. Testar recuperação de senha com uma conta de homologação e destinatário autorizado, validade do remetente e entrega real. Não usar o backend de console em produção; ele expõe links de recuperação nos logs locais por finalidade de desenvolvimento.
 10. Configurar agendamento, armazenamento separado e alertas dos backups conforme `OPERACAO.md`. Restaurar uma cópia no ambiente final e conferir os relatórios. Testar reinício do serviço e persistência do banco.
 11. Executar o ciclo pedagógico e a matriz de aparelhos de `ETAPA6.md`. Testar expiração da sessão, conta de outro professor, PDF/CSV, instalação, orientação da tela e perda de conexão.
@@ -61,7 +66,6 @@ Os checks exigem hosts exatos, PostgreSQL, SMTP seguro, remetente e cadastro fec
 
 ## Referências consultadas
 
-- [Locaweb — bancos na Hospedagem de Sites](https://www.locaweb.com.br/ajuda/wiki/como-instalar-um-banco-de-dados-hospedagem-de-sites/).
 - [Locaweb — família de produtos Cloud/VPS](https://www.locaweb.com.br/cloud/).
 - [Django 5.2 — checklist de implantação](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/).
 - [Waitress — proxy reverso](https://docs.pylonsproject.org/projects/waitress/en/stable/reverse-proxy.html).

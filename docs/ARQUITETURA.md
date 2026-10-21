@@ -113,5 +113,5 @@ Os comandos `backup_diary` e `restore_diary` usam backup consistente do SQLite o
 - O recorte por ano civil é uma premissa inicial; calendários que atravessam anos exigirão ajuste.
 - Compartilhamento entre professores, aplicativo nativo e sincronização offline não estão implementados. PWA preparado; instalação e uso em aparelhos Android/iPhone reais aguardam homologação com HTTPS.
 - PostgreSQL 18 foi validado localmente; hospedagem, HTTPS e SMTP real permanecem pendentes.
-- Continuar a Etapa 7 confirmando a compatibilidade da Locaweb Compartilhada Linux GO com Python/Django e execução WSGI persistente; incluir a homologação física pendente da Etapa 6. Ver IMPLANTACAO_LOCAWEB.md. O sistema ainda não foi disponibilizado em produção.
+- Continuar a Etapa 7 identificando o sistema operacional e os serviços da VPS existente na Locaweb, escolhida pelo proprietário, e preparando a implantação; incluir a homologação física pendente da Etapa 6. Ver IMPLANTACAO_LOCAWEB.md. O sistema ainda não foi disponibilizado em produção.
 

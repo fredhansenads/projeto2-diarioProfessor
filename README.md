@@ -130,11 +130,11 @@ Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar 
 
 ## Etapa 7 — preparação local validada, implantação pendente
 
-O usuário informou Locaweb, Hospedagem Compartilhada Linux GO, e o subdomínio `diarioprofessor.santustech.com.br`. A compatibilidade desse plano com a aplicação ainda precisa ser confirmada pelo provedor. Há uma mensagem pronta para o suporte em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
+O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. O próximo passo é identificar o sistema operacional, recursos e serviços existentes na VPS para preparar a configuração. Roteiro em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
 
 O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 
-- Confirmar a hospedagem e provisionar PostgreSQL; planejar separadamente a migração dos dados reais do SQLite.
+- Inventariar e configurar a VPS e provisionar PostgreSQL; planejar separadamente a migração dos dados reais do SQLite.
 - Agendar backups, guardar cópias fora do servidor e testar a recuperação no ambiente contratado.
 - Definir `DJANGO_DEBUG=False`, uma `DJANGO_SECRET_KEY` própria e `DJANGO_ALLOWED_HOSTS` com o domínio.
 - Configurar HTTPS, proxy, serviço da aplicação e entrega de arquivos estáticos.

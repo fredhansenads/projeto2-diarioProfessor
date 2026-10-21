@@ -53,7 +53,7 @@ O início foi autorizado. As premissas abaixo permitem avançar na base; confirm
 | Quais regras de notas, pesos, arredondamento, aprovação e recuperação devem ser atendidas? | Usuário escolheu configuração por turma/disciplina/período. Cálculos e limites implementados em docs/ETAPA4.md; não há decisão oficial de aprovação |
 | A frequência será registrada por aula, por dia ou por outro critério? | Confirmada pelo usuário: por aula, com várias aulas no encontro e faltas parciais |
 | Quais informações e formatos são necessários para o conselho de classe e o sistema da escola? | Modelo geral aprovado: notas, frequência, pendências e observações por turma/disciplina/período; PDF e CSV. Modelos específicos e integração com a escola não informados |
-| Onde será hospedado e como serão mantidos e restaurados os backups? | Locaweb, Hospedagem Compartilhada Linux GO; diarioprofessor.santustech.com.br. Compatibilidade a confirmar com o provedor. Backup/restauração local validados; agendamento e armazenamento externo pendentes |
+| Onde será hospedado e como serão mantidos e restaurados os backups? | VPS existente na Locaweb; diarioprofessor.santustech.com.br. Sistema operacional, recursos, serviços existentes e acesso a identificar. GO descartado pelo proprietário por falta de suporte a Python/Django. Backup/restauração local validados; agendamento e armazenamento externo pendentes |
 | Quem cria as contas? | Confirmado: somente o administrador |
 
 ## 5. Escopo proposto para a primeira versão
@@ -220,13 +220,13 @@ Não incluir automaticamente na primeira versão:
 
 **Última entrega:** contas somente pelo administrador, proteção de login, verificações de produção, servidor Waitress, arquivos estáticos, backup/restauração e documentação operacional. Validações locais em SQLite e PostgreSQL 18.
 
-**Próxima ação:** confirmar com a Locaweb Python/WSGI e PostgreSQL no contrato Linux GO (a proposta pública lista MySQL para o GO). Obter a resposta técnica da Locaweb à mensagem preparada em docs/IMPLANTACAO_LOCAWEB.md e continuar a implantação dentro da Etapa 7. Após confirmar o ambiente, configurar e validar banco, HTTPS, SMTP, backups e aparelhos físicos; apresentar a versão para autorização de disponibilização.
+**Próxima ação:** identificar sistema operacional/versão, RAM, serviços/painel existentes e método de acesso à VPS da Locaweb; preparar a configuração conforme docs/IMPLANTACAO_LOCAWEB.md e continuar a implantação dentro da Etapa 7. Após confirmar o ambiente, configurar e validar banco, HTTPS, SMTP, backups e aparelhos físicos; apresentar a versão para autorização de disponibilização.
 
-**Autorização:** Etapa 7 autorizada pelo usuário. Locaweb Compartilhada Linux GO e subdomínio informados; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
+**Autorização:** Etapa 7 autorizada pelo usuário. VPS existente na Locaweb escolhida e subdomínio mantido; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
 **Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e PostgreSQL 18 validado localmente.
 **Testes da aplicação:** 150 testes Django aprovados em cada banco e 12 testes JavaScript aprovados. Ciclo pedagógico completo, permissões, bloqueio de login e backup/restauração conferidos. Restauração PostgreSQL comparada em 29 tabelas. Login/logout verificados no navegador com Waitress e PostgreSQL local. São testes com dados fictícios; não substituem serviços externos e aparelhos reais. Evidências e limites em docs/ETAPA7.md.
 
-**Limitações atuais:** instalação/uso em Android e iPhone físicos ainda não homologados; sem consulta ou gravação offline. E-mail de recuperação apenas no terminal por padrão; SMTP real, HTTPS e hospedagem não validados. Compatibilidade do plano compartilhado pendente; PostgreSQL validado somente em ambiente local. Agendamento de backups e cópias externas não configurados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
+**Limitações atuais:** instalação/uso em Android e iPhone físicos ainda não homologados; sem consulta ou gravação offline. E-mail de recuperação apenas no terminal por padrão; SMTP real, HTTPS e hospedagem não validados. Inventário e configuração da VPS pendentes; PostgreSQL validado somente em ambiente local. Agendamento de backups e cópias externas não configurados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
 
 **Como executar:** consultar README.md e aplicar as migrações. Não há conta ou senha padrão. Matrículas antigas permanecem preservadas; revisar datas de entrada e saída. Dados fictícios de verificação usam banco temporário separado.
 
@@ -242,6 +242,7 @@ Não incluir automaticamente na primeira versão:
 | 20/10/2026 | Etapa 6: PWA conectado, instruções Android/iPhone e revisão mobile | 135 testes Django, 12 JavaScript, salvamentos em telas pequenas e fallback com servidor parado; aparelhos reais pendentes | Salvar no Git/GitHub e solicitar autorização para a Etapa 7, levando a homologação física pendente |
 | 21/10/2026 | Etapa 7: preparação local, proteção de acesso, backup/restauração e guias de implantação/operação | 150 testes em cada banco, 12 JavaScript e restauração conferida; serviços externos pendentes | Confirmar compatibilidade com a Locaweb e continuar a Etapa 7 |
 | 21/10/2026 | Proprietário confirmou o plano Hospedagem Compartilhada Linux GO; documentação e mensagem ao suporte atualizadas | Proposta pública indica diferença de banco e não confirma Python/WSGI; contrato específico ainda precisa de confirmação | Obter resposta técnica da Locaweb antes da implantação |
+| 21/10/2026 | Proprietário informou falta de suporte a Python/Django no GO e escolheu sua VPS da Locaweb; roteiro atualizado | Alteração documental; nenhum acesso remoto ou publicação | Identificar sistema/versão, RAM, serviços existentes e acesso à VPS |
 
 ### Decisões aprovadas
 
@@ -256,5 +257,6 @@ Não incluir automaticamente na primeira versão:
 | 20/10/2026 | Executar a Etapa 5 e utilizar modelo geral de relatório com PDF e CSV | “pode iniciar 5 etapa” e “Sim, usar esse modelo geral” |
 | 20/10/2026 | Executar a Etapa 6; internet obrigatória nesta versão; atender Android e iPhone | “pode iniciar 6 etapa” e respostas às perguntas sobre conexão e aparelhos |
 | 21/10/2026 | Executar a Etapa 7; contas somente pelo administrador; Locaweb Hospedagem Compartilhada Linux GO e diarioprofessor.santustech.com.br | “pode iniciar etapa 7” e respostas às perguntas de implantação |
+| 21/10/2026 | Implantar na VPS já existente na Locaweb, mantendo o subdomínio e Python/Django | Escolha explícita do usuário após informar que o GO não suporta Python/Django |
 
 Django, SQLite local, PostgreSQL e contas isoladas foram adotados como decisões de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md, docs/ETAPA6.md e docs/ETAPA7.md.

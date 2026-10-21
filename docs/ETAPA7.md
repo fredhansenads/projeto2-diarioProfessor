@@ -5,7 +5,7 @@ Data: 21/10/2026. **Em andamento: preparação local entregue; publicação não
 ## Decisões do proprietário
 
 - Etapa 7 autorizada.
-- **Hospedagem Compartilhada Linux GO da Locaweb**.
+- **VPS já existente na Locaweb**, escolhida pelo proprietário após informar que o plano compartilhado Linux GO não suporta Python/Django.
 - Subdomínio: **diarioprofessor.santustech.com.br**.
 - Contas criadas **somente pelo administrador**.
 - Permanecem as decisões anteriores: Python, internet obrigatória, Android e iPhone, dados isolados por professor, aprovação antes de avançar de etapa.
@@ -40,7 +40,7 @@ São 150 casos Django executados em cada banco, não 300 casos distintos. Os doi
 
 ## O que ainda impede declarar pronto para uso real
 
-- Confirmar com a Locaweb Python/WSGI persistente, PostgreSQL e recursos operacionais do plano compartilhado. A proposta pública lista MySQL para o GO e não confirma Python/WSGI; conferir as condições do contrato específico conforme IMPLANTACAO_LOCAWEB.md.
+- Identificar sistema operacional, recursos, serviços existentes e acesso à VPS escolhida; preparar a implantação conforme IMPLANTACAO_LOCAWEB.md.
 - Preparar a infraestrutura confirmada, verificar HTTPS real/DNS, supervisão do processo e confiança do proxy.
 - Configurar e testar SMTP com destinatário autorizado.
 - Agendar e verificar backups fora do servidor, alertas e restauração no ambiente contratado; definir responsáveis e política de retenção.
@@ -48,11 +48,11 @@ São 150 casos Django executados em cada banco, não 300 casos distintos. Os doi
 - Concluir a matriz Android/Chrome e iPhone/Safari em aparelhos reais, inclusive instalação, suspensão/retomada e perda de conexão.
 - Validar com o professor o ciclo pedagógico e obter autorização final de disponibilização.
 
-Os itens externos permanecem abertos no plano. Não criar uma Etapa 8 fictícia nem marcar a Etapa 7 como concluída para ocultar essas pendências. O próximo trabalho é resolver a compatibilidade da hospedagem e continuar a mesma etapa, mediante as informações/acessos necessários.
+Os itens externos permanecem abertos no plano. Não criar uma Etapa 8 fictícia nem marcar a Etapa 7 como concluída para ocultar essas pendências. O próximo trabalho é inventariar a VPS e preparar sua configuração e continuar a mesma etapa, mediante as informações/acessos necessários.
 
 ## Continuidade
 
-1. Ler `IMPLANTACAO_LOCAWEB.md` e obter a resposta técnica do provedor usando o texto preparado; nenhuma mensagem foi enviada por este trabalho.
+1. Ler `IMPLANTACAO_LOCAWEB.md` e obter os dados da VPS: sistema/versão, recursos, serviços/painel existentes e método de acesso. A consulta ao suporte sobre o GO foi superada pela escolha da VPS.
 2. Adaptar a configuração ao mecanismo de execução confirmado, sem substituir o requisito Python ou contratar outro serviço por conta própria.
 3. Seguir a homologação e operação documentadas em `OPERACAO.md` e `ETAPA6.md`.
 4. Salvar cada entrega no Git/GitHub e apresentar a implantação validada ao proprietário antes da disponibilização.
