@@ -1,0 +1,45 @@
+# Substitui apenas o arquivo ACME deste projeto, apos emitir o certificado.
+# Nunca habilitar os dois exemplos simultaneamente.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name diarioprofessor.santustech.com.br;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/diarioprofessor-acme;
+        default_type text/plain;
+        try_files $uri =404;
+    }
+    location / { return 301 https://diarioprofessor.santustech.com.br$request_uri; }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name diarioprofessor.santustech.com.br;
+    ssl_certificate /etc/letsencrypt/live/diarioprofessor.santustech.com.br/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/diarioprofessor.santustech.com.br/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 2m;
+
+    # Homologacao inicialmente acessivel apenas na propria VPS.
+    # Adicionar o IP autorizado do avaliador antes de deny all.
+    # Liberacao geral depende de homologacao e autorizacao final.
+    allow 127.0.0.1;
+    allow ::1;
+    deny all;
+
+    location / {
+        proxy_pass http://127.0.0.1:8001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header Connection "";
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host "";
+        proxy_set_header Forwarded "";
+        proxy_cache off;
+        # Evita registrar tokens de recuperacao presentes nas URLs.
+        access_log off;
+    }
+}

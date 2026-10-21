@@ -130,7 +130,7 @@ Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar 
 
 ## Etapa 7 — preparação local validada, implantação pendente
 
-O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. A VPS tem Ubuntu (versão pendente), 1 GB RAM, 2 vCPUs e disco de 40 GB, com outro sistema Python em uso. O próximo passo é consultar os recursos livres e os serviços existentes antes de preparar a configuração. Roteiro em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
+O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. A VPS tem Ubuntu 24.04.4, 1 GB RAM, 2 vCPUs e disco de 40 GB, com Flask e Node em uso. Foram medidos 307 MiB RAM disponíveis. Os modelos de serviço e proxy isolados estão preparados; instalação, testes nessa VPS e capacidade conjunta continuam pendentes. O primeiro bloco para execução pelo terminal está em [docs/VPS_UBUNTU.md](docs/VPS_UBUNTU.md). Roteiro em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
 
 O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 

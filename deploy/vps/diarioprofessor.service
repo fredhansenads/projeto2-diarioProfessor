@@ -1,0 +1,26 @@
+[Unit]
+Description=Diario do Professor Django
+After=network.target postgresql@16-main.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=diarioprofessor
+Group=diarioprofessor
+WorkingDirectory=/opt/diarioprofessor/app
+EnvironmentFile=/etc/diarioprofessor/production.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/diarioprofessor/venv/bin/python /opt/diarioprofessor/app/serve.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryAccounting=true
+
+[Install]
+WantedBy=multi-user.target

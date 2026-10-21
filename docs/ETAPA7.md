@@ -6,7 +6,7 @@ Data: 21/10/2026. **Em andamento: preparação local entregue; publicação não
 
 - Etapa 7 autorizada.
 - **VPS já existente na Locaweb**, escolhida pelo proprietário após informar que o plano compartilhado Linux GO não suporta Python/Django.
-- VPS informada: Ubuntu (versão pendente), 1 GB RAM, 2 vCPUs, disco de 40 GB; já executa outro sistema Python. Recursos livres ainda não medidos.
+- VPS: Ubuntu 24.04.4, 1 GB RAM, 2 vCPUs, disco de 40 GB. Inventário recebido: Python 3.12.3, PostgreSQL 16.15, Nginx/Certbot, Flask e Node/PM2. Medição pontual de 307 MiB RAM disponíveis; capacidade conjunta ainda não validada.
 - Subdomínio: **diarioprofessor.santustech.com.br**.
 - Contas criadas **somente pelo administrador**.
 - Permanecem as decisões anteriores: Python, internet obrigatória, Android e iPhone, dados isolados por professor, aprovação antes de avançar de etapa.
@@ -41,7 +41,7 @@ São 150 casos Django executados em cada banco, não 300 casos distintos. Os doi
 
 ## O que ainda impede declarar pronto para uso real
 
-- Confirmar versão do Ubuntu, recursos livres, serviços existentes e acesso à VPS escolhida; preparar a implantação conforme IMPLANTACAO_LOCAWEB.md.
+- Executar a preparação isolada na VPS inventariada, conforme VPS_UBUNTU.md, e validar dependências em Python 3.12/PostgreSQL 16 e memória sob uso. Modelos de implantação preparados localmente; nada instalado no servidor.
 - Preparar a infraestrutura confirmada, verificar HTTPS real/DNS, supervisão do processo e confiança do proxy.
 - Configurar e testar SMTP com destinatário autorizado.
 - Agendar e verificar backups fora do servidor, alertas e restauração no ambiente contratado; definir responsáveis e política de retenção.
@@ -53,7 +53,7 @@ Os itens externos permanecem abertos no plano. Não criar uma Etapa 8 fictícia 
 
 ## Continuidade
 
-1. Ler `IMPLANTACAO_LOCAWEB.md`, obter o destino/método de acesso SSH ou a saída da consulta `deploy/inspecionar-vps.sh`, e identificar os recursos livres e o serviço Python existente. A consulta ao suporte sobre o GO foi superada pela escolha da VPS.
+1. Ler `VPS_UBUNTU.md` e executar somente seu primeiro bloco pelo terminal do proprietário; conferir o resultado antes de instalar dependências ou criar banco. O inventário já foi recebido; autenticação SSH automática indisponível.
 2. Adaptar a configuração ao mecanismo de execução confirmado, sem substituir o requisito Python ou contratar outro serviço por conta própria.
 3. Seguir a homologação e operação documentadas em `OPERACAO.md` e `ETAPA6.md`.
 4. Salvar cada entrega no Git/GitHub e apresentar a implantação validada ao proprietário antes da disponibilização.

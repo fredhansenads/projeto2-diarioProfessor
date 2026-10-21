@@ -1,0 +1,15 @@
+# Preparacao de certificado: nao encaminha requisicoes ao Django.
+# Instalar apenas depois de confirmar DNS e ausencia de server_name duplicado.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name diarioprofessor.santustech.com.br;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/diarioprofessor-acme;
+        default_type text/plain;
+        try_files $uri =404;
+    }
+
+    location / { return 404; }
+}

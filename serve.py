@@ -7,8 +7,11 @@ from config.wsgi import application
 
 
 def server_options():
+    threads = int(os.getenv("WAITRESS_THREADS", "4"))
+    if threads < 1:
+        raise ValueError("WAITRESS_THREADS deve ser maior que zero.")
     options = {"host": os.getenv("WAITRESS_HOST", "127.0.0.1"),
-               "port": int(os.getenv("PORT", "8000")), "threads": 4,
+               "port": int(os.getenv("PORT", "8000")), "threads": threads,
                "max_request_body_size": 2 * 1024 * 1024,
                "clear_untrusted_proxy_headers": True}
     proxy = os.getenv("WAITRESS_TRUSTED_PROXY", "").strip()

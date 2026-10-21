@@ -6,11 +6,9 @@ Atualizado em 21/10/2026. Destino escolhido pelo proprietário: **VPS já existe
 
 ## Identificação da VPS antes da configuração
 
-Informações fornecidas pelo proprietário: **Ubuntu (versão ainda não informada), 1 GB de RAM, 2 vCPUs e disco de 40 GB**. A VPS já executa outro sistema Python semelhante, descrito como leve. Esses números são a capacidade informada, não uma medição de recursos livres.
+Inventário recebido em 21/10/2026: **Ubuntu 24.04.4, Python 3.12.3, PostgreSQL 16.15, Nginx 1.24.0 e Certbot**. VPS com 1 GB RAM, 2 vCPUs e disco de 40 GB. A saída mostrou 307 MiB de memória disponíveis, swap em uso e 28 GB livres em disco. Já há Flask/Gunicorn na porta 8000, Node/PM2 na 3000 e dois sites no Nginx.
 
-Antes de instalar, conferir versão do Ubuntu, RAM disponível, swap, espaço livre, portas ocupadas, banco/proxy e como o sistema existente é iniciado. A capacidade para os dois sistemas precisa ser medida; ainda não foi validada. Preservar os ambientes virtuais, dependências, banco e serviço da aplicação existente. Evitar atualização global do Python ou substituição das configurações do proxy durante a instalação do diário.
-
-Solicitado ao proprietário: IP/hostname, usuário e porta SSH, e se há chave de acesso já configurada neste computador; alternativamente, ele pode executar a consulta no próprio terminal. Não enviar senhas nem conteúdo de chaves na conversa. O destino e o método de acesso ainda não foram informados.
+O SSH automático não autenticou; o proprietário está executando as consultas pelo terminal. O plano concreto e o primeiro bloco de preparação estão em **[VPS_UBUNTU.md](VPS_UBUNTU.md)**. Usar os modelos específicos de `deploy/vps/`, com serviço próprio em loopback na porta 8001, sem alterar os serviços existentes. A capacidade ainda será testada. Atualizações e reinicialização indicadas pelo servidor exigem manutenção planejada separadamente.
 
 ### Consulta inicial sem alterações
 
@@ -27,17 +25,17 @@ Conferir a saída antes de compartilhá-la. Um programa ausente no PATH pode exi
 ## Roteiro da implantação na VPS
 
 1. Inventariar o ambiente e preservar a configuração dos serviços existentes antes de qualquer mudança. Confirmar recursos disponíveis e permissões administrativas.
-2. Definir a execução da aplicação conforme o ambiente: aproveitar a infraestrutura existente quando adequada. A escolha entre serviço do sistema e contêiner fica pendente desse inventário.
+2. Definir a execução da aplicação conforme o ambiente: aproveitar a infraestrutura existente quando adequada. O inventário orientou a preparação de uma unidade systemd própria, usando o Nginx e o PostgreSQL existentes.
 3. Preparar usuário/diretório próprios da aplicação, Python e dependências fixadas, PostgreSQL e armazenamento persistente. A versão Python 3.14.7 e o PostgreSQL 18 foram validados localmente; conferir disponibilidade e testar qualquer mudança de versão.
 4. Integrar o diário ao proxy HTTPS no subdomínio, escolhendo uma porta interna livre e mantendo aplicação e banco sem exposição pública direta. Definir a confiança do proxy conforme a topologia real.
 5. Configurar SMTP, backup agendado, cópia externa e recuperação; verificar os serviços com dados fictícios antes de migrar dados reais.
 6. Executar a sequência de homologação abaixo e a validação em aparelhos reais. Apresentar os resultados ao proprietário para autorização final de disponibilização.
 
-Os comandos específicos de instalação, serviço, firewall e proxy serão preparados após identificar o ambiente. A troca de destino mantém Python/Django e PostgreSQL; não exige reescrever o sistema. Nenhum novo serviço foi contratado.
+Os modelos específicos e a sequência de instalação estão em VPS_UBUNTU.md; ainda não foram aplicados no servidor. A troca de destino mantém Python/Django e PostgreSQL; não exige reescrever o sistema. Nenhum novo serviço foi contratado.
 
 ## Preparação disponível
 
-- `deploy/production.env.example`: modelo sem segredos, com o subdomínio informado, PostgreSQL, SMTP e cadastro público desligado.
+- `deploy/vps/production.env.example`: modelo específico para PostgreSQL local, porta 8001 e duas threads. `deploy/production.env.example` permanece como modelo genérico com banco remoto/TLS.
 - `config/wsgi.py`: entrada WSGI da aplicação.
 - `serve.py`: Waitress para ambientes que permitem processo persistente. Usa **127.0.0.1:8000** por padrão. A porta definitiva depende dos serviços existentes na VPS.
 - WhiteNoise fornece os arquivos coletados, comprimidos e identificados pelo conteúdo, inclusive os do administrador. O app pressupõe publicação na raiz do subdomínio.
@@ -51,7 +49,7 @@ Comandos abaixo são um roteiro para execução no ambiente correto, não açõe
 1. Definir diretório privado do projeto, serviço WSGI, proxy/HTTPS e banco PostgreSQL suportado pelo Django. Usar uma conta de banco dedicada, sem superusuário, com permissões necessárias apenas para o banco do diário. O PostgreSQL 18 foi validado localmente; outra versão precisa ser conferida com o Django e testada.
 2. Criar um ambiente Python, instalar `requirements-production.txt` e configurar as variáveis do modelo. Não copiar banco local, `.env`, `.local-secret`, backups ou dados de teste para o diretório público.
 3. Gerar uma chave exclusiva de produção e mantê-la no gerenciador de segredos do provedor ou em arquivo privado acessível apenas ao serviço. Nunca versionar ou imprimir essa chave em logs. Preencher banco, remetente autorizado e SMTP. TLS e SSL de e-mail são opções alternativas; não ativar ambos.
-4. Validar TLS do banco remoto. O modelo usa `POSTGRES_SSLMODE=verify-full`; obter CA/hostname corretos do provedor e, se preciso, configurar `PGSSLROOTCERT`. Não desativar a verificação para resolver erros de certificado.
+4. Usar o modelo adequado à conexão: na VPS, banco em loopback conforme VPS_UBUNTU.md. Para banco remoto, validar TLS. O modelo genérico usa `POSTGRES_SSLMODE=verify-full`; obter CA/hostname corretos do provedor e, se preciso, configurar `PGSSLROOTCERT`. Não desativar a verificação para resolver erros de certificado.
 5. Executar, com o ambiente de homologação configurado:
 
 ```text
