@@ -1,0 +1,61 @@
+# Never use this stack in production: all data and credentials are fictitious.
+name: diario-validacao
+services:
+  db:
+    image: postgres:16.15-bookworm
+    environment:
+      POSTGRES_DB: diario_validation
+      POSTGRES_USER: validation
+      POSTGRES_PASSWORD: validation-only-local
+    command: ["postgres", "-c", "shared_buffers=32MB", "-c", "max_connections=30"]
+    volumes:
+      - validation_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U validation -d diario_validation"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    mem_limit: 192m
+    cpus: 1
+  lab:
+    build:
+      context: ../..
+      dockerfile: deploy/validation/Dockerfile
+    environment:
+      VALIDATION_ONLY: "1"
+      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_SECRET_KEY: local-validation-only-not-a-production-secret-2026
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      DJANGO_CSRF_TRUSTED_ORIGINS: https://localhost:18443
+      DB_ENGINE: postgresql
+      POSTGRES_DB: diario_validation
+      POSTGRES_USER: validation
+      POSTGRES_PASSWORD: validation-only-local
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSLMODE: disable
+      PUBLIC_REGISTRATION_ENABLED: "False"
+      EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      EMAIL_HOST: localhost
+      EMAIL_PORT: "1025"
+      EMAIL_USE_TLS: "True"
+      EMAIL_USE_SSL: "False"
+      DEFAULT_FROM_EMAIL: diario@example.test
+      WAITRESS_HOST: 127.0.0.1
+      PORT: "8001"
+      WAITRESS_THREADS: "2"
+      WAITRESS_TRUSTED_PROXY: 127.0.0.1
+      SSL_CERT_FILE: /tmp/diario-validation/cert.pem
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:18080:18080"
+      - "127.0.0.1:18443:18443"
+    volumes:
+      - ../../tmp/validation-results:/results
+    mem_limit: 512m
+    cpus: 2
+volumes:
+  validation_db:

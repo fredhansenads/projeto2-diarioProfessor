@@ -91,7 +91,7 @@ Acesse `/admin/`. Ao criar professores, mantenha desmarcados os privilégios de 
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 150 testes Django, aprovados tanto em SQLite quanto em PostgreSQL 18 local: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações, instalação, segurança e recuperação. Também passaram os 12 testes JavaScript da PWA. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
+A suíte atual contém 150 testes Django, aprovados em SQLite e PostgreSQL 18 local e repetidos com sucesso em Ubuntu/Python 3.12.3 com SQLite e PostgreSQL 16.15: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações, instalação, segurança e recuperação. Também passaram os 12 testes JavaScript da PWA. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
 
 Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
@@ -130,7 +130,9 @@ Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar 
 
 ## Etapa 7 — preparação local validada, implantação pendente
 
-O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. A VPS tem Ubuntu 24.04.4, 1 GB RAM, 2 vCPUs e disco de 40 GB, com Flask e Node em uso. Foram medidos 307 MiB RAM disponíveis. Os modelos de serviço e proxy isolados estão preparados; instalação, testes nessa VPS e capacidade conjunta continuam pendentes. O primeiro bloco para execução pelo terminal está em [docs/VPS_UBUNTU.md](docs/VPS_UBUNTU.md). Roteiro em [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md).
+**Prioridade atual: avaliar a demonstração local antes de preparar a VPS.** O laboratório com 120 alunos fictícios abre em http://localhost:18080 enquanto estiver ativo. Contas de teste, resultados, comandos de retomada e roteiro de avaliação estão em [docs/VALIDACAO_LOCAL.md](docs/VALIDACAO_LOCAL.md). HTTPS/SMTP locais, recuperação de senha, restauração de 29 tabelas e 72 consultas com quatro clientes simultâneos passaram. A avaliação do professor e os aparelhos físicos continuam pendentes.
+
+O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. A VPS tem Ubuntu 24.04.4, 1 GB RAM, 2 vCPUs e disco de 40 GB, com Flask e Node em uso. Foram medidos 307 MiB RAM disponíveis. Os modelos de serviço e proxy isolados estão preparados; instalação, testes nessa VPS e capacidade conjunta continuam pendentes. **Não executar sua preparação antes da avaliação local e autorização.** Os guias [docs/VPS_UBUNTU.md](docs/VPS_UBUNTU.md) e [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md) ficam reservados para essa retomada futura.
 
 O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 

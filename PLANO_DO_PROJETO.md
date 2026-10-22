@@ -179,6 +179,7 @@ A adaptação das telas ao celular deve ocorrer desde a Etapa 1; esta etapa cons
 - [x] Testar as regras críticas de notas, frequência e relatórios.
 - [x] Verificar permissões e isolamento entre contas, quando aplicável.
 - [x] Executar um ciclo completo com dados fictícios: cadastros, aulas, chamada, avaliações e conselho.
+- [x] Validar localmente Python 3.12/PostgreSQL 16, HTTPS/SMTP locais, restauração e consultas simultâneas; preparar demonstração fictícia para avaliação.
 - [ ] Concluir a homologação física da Etapa 6 em Android/Chrome e iPhone/Safari com HTTPS.
 - [ ] Corrigir falhas identificadas na validação com o usuário.
 - [ ] Preparar hospedagem, HTTPS e configuração de produção.
@@ -218,15 +219,15 @@ Não incluir automaticamente na primeira versão:
 
 **Etapa atual:** Etapa 7 em andamento; preparação local validada, sem publicação.
 
-**Última entrega:** contas somente pelo administrador, proteção de login, verificações de produção, servidor Waitress, arquivos estáticos, backup/restauração e documentação operacional. Validações locais em SQLite e PostgreSQL 18.
+**Última entrega:** laboratório local Ubuntu/Python 3.12.3/PostgreSQL 16.15 com 120 alunos fictícios; ensaios de HTTPS/SMTP, recuperação de senha, restauração e desempenho aprovados. Demonstração em http://localhost:18080 e roteiro em docs/VALIDACAO_LOCAL.md, aguardando avaliação do professor. Contas administradas, proteção de login e guias operacionais já entregues.
 
-**Próxima ação:** executar pelo terminal do proprietário somente o primeiro bloco de docs/VPS_UBUNTU.md, que verifica conflitos e prepara conta/diretórios/venv isolados. Conferir a saída antes de instalar dependências e criar banco. Modelos de serviço, ambiente e Nginx preparados; validar Python 3.12/PostgreSQL 16, capacidade, HTTPS, SMTP, backups e aparelhos antes da disponibilização. Não modificar os dois sistemas existentes.
+**Próxima ação:** proprietário testar a demonstração seguindo docs/VALIDACAO_LOCAL.md; registrar dificuldades e ajustar os fluxos afetados. Preservar seu banco fictício de avaliação. Não preparar nem alterar a VPS enquanto a validação e a aprovação não forem concluídas.
 
-**Autorização:** Etapa 7 autorizada pelo usuário. VPS existente na Locaweb escolhida e subdomínio mantido; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
-**Implementação:** Python 3.14.7, Django 5.2.18, SQLite local e PostgreSQL 18 validado localmente.
-**Testes da aplicação:** 150 testes Django aprovados em cada banco e 12 testes JavaScript aprovados. Ciclo pedagógico completo, permissões, bloqueio de login e backup/restauração conferidos. Restauração PostgreSQL comparada em 29 tabelas. Login/logout verificados no navegador com Waitress e PostgreSQL local. São testes com dados fictícios; não substituem serviços externos e aparelhos reais. Evidências e limites em docs/ETAPA7.md.
+**Autorização:** Etapa 7 autorizada pelo usuário; orientação mais recente: testar primeiro, sem alterar a VPS. A preparação do servidor foi adiada expressamente. VPS existente na Locaweb escolhida e subdomínio mantido; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
+**Implementação:** Python 3.14.7 no Windows e 3.12.3 no laboratório Ubuntu, Django 5.2.18, SQLite e PostgreSQL 18/16.15 validados localmente.
+**Testes da aplicação:** 150 testes Django aprovados por banco, repetidos em SQLite/PostgreSQL 16 com Python 3.12; 12 JavaScript aprovados. Recuperação por SMTP STARTTLS local, HTTPS com certificado verificado e restauração de 29 tabelas PostgreSQL 16 conferidos. Quatro clientes/72 consultas sem erro; p95 1,65 s e Waitress RSS observado 84,9 MiB. Login, painel e ficha em viewport de celular conferidos no navegador. São dados fictícios; não substituem capacidade na VPS, serviços externos e aparelhos reais. Evidências e limites em docs/VALIDACAO_LOCAL.md e docs/ETAPA7.md.
 
-**Limitações atuais:** instalação/uso em Android e iPhone físicos ainda não homologados; sem consulta ou gravação offline. E-mail de recuperação apenas no terminal por padrão; SMTP real, HTTPS e hospedagem não validados. Inventário inicial recebido; configuração e capacidade conjunta da VPS pendentes; PostgreSQL validado somente em ambiente local. Agendamento de backups e cópias externas não configurados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
+**Limitações atuais:** avaliação do professor e instalação/uso em Android e iPhone físicos ainda pendentes; sem consulta ou gravação offline. SMTP/HTTPS locais testados, mas entrega externa de e-mail, certificado público e hospedagem não validados. Inventário inicial recebido; configuração e capacidade conjunta da VPS pendentes; PostgreSQL validado somente em ambiente local. Agendamento de backups e cópias externas não configurados. Sem impressão física validada, ata de conselho, integração automática ou modelos específicos de escolas. Notas não decidem aprovação oficial; recuperação limitada às opções em docs/ETAPA4.md.
 
 **Como executar:** consultar README.md e aplicar as migrações. Não há conta ou senha padrão. Matrículas antigas permanecem preservadas; revisar datas de entrada e saída. Dados fictícios de verificação usam banco temporário separado.
 
@@ -245,6 +246,7 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Proprietário informou falta de suporte a Python/Django no GO e escolheu sua VPS da Locaweb; roteiro atualizado | Alteração documental; nenhum acesso remoto ou publicação | Identificar sistema/versão, RAM, serviços existentes e acesso à VPS |
 | 21/10/2026 | Proprietário informou Ubuntu, 1 GB RAM, 2 vCPUs, disco de 40 GB e outro sistema Python em uso; consulta somente leitura preparada | Sintaxe Bash conferida; recursos livres e funcionamento na VPS ainda não verificados | Obter acesso identificado ou saída da consulta antes de definir a instalação |
 | 21/10/2026 | Inventário recebido: Ubuntu 24.04.4, Python 3.12.3, PostgreSQL 16.15, Nginx/Certbot e dois sistemas em uso; modelos de implantação isolada preparados | Metadados permitem Python 3.12; configuração Waitress e 15 testes operacionais locais conferidos. Binários Linux, carga e implantação pendentes | Executar somente o primeiro bloco de docs/VPS_UBUNTU.md pelo terminal do proprietário |
+| 21/10/2026 | Proprietário adiou a VPS; validação local ampliada e demonstração fictícia entregues | Python 3.12/PostgreSQL 16, 150 testes por banco, 12 PWA, HTTPS/SMTP locais, recuperação, 29 tabelas restauradas e 72 consultas simultâneas aprovados | Professor avaliar localhost:18080 conforme docs/VALIDACAO_LOCAL.md; VPS permanece adiada |
 
 ### Decisões aprovadas
 
@@ -260,5 +262,6 @@ Não incluir automaticamente na primeira versão:
 | 20/10/2026 | Executar a Etapa 6; internet obrigatória nesta versão; atender Android e iPhone | “pode iniciar 6 etapa” e respostas às perguntas sobre conexão e aparelhos |
 | 21/10/2026 | Executar a Etapa 7; contas somente pelo administrador; Locaweb Hospedagem Compartilhada Linux GO e diarioprofessor.santustech.com.br | “pode iniciar etapa 7” e respostas às perguntas de implantação |
 | 21/10/2026 | Implantar na VPS já existente na Locaweb, mantendo o subdomínio e Python/Django | Escolha explícita do usuário após informar que o GO não suporta Python/Django |
+| 21/10/2026 | Validar e testar localmente antes de qualquer preparação da VPS | Usuário pediu subir somente quando pronto/testado e respondeu “pode” à validação sem alterar a VPS |
 
 Django, SQLite local, PostgreSQL e contas isoladas foram adotados como decisões de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md, docs/ETAPA6.md e docs/ETAPA7.md.

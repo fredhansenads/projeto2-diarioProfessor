@@ -1,5 +1,7 @@
 # Implantação — Diário do Professor / Locaweb
 
+**Preparação da VPS adiada pelo proprietário em 21/10/2026. Não executar os comandos deste roteiro agora. Concluir primeiro a validação local e a aprovação de uso.**
+
 Atualizado em 21/10/2026. Destino escolhido pelo proprietário: **VPS já existente na Locaweb**, subdomínio **diarioprofessor.santustech.com.br**.
 
 **Situação:** preparação e testes locais realizados; implantação na VPS ainda não executada. O proprietário informou que a Hospedagem Compartilhada Linux GO não oferece suporte a Python/Django e decidiu utilizar sua VPS. A confirmação de compatibilidade do GO deixou de ser uma pendência. Não houve acesso à VPS, alteração de DNS, envio de arquivos ou publicação.

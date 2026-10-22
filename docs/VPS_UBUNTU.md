@@ -1,5 +1,7 @@
 # Implantação na VPS Ubuntu existente
 
+**Preparação da VPS adiada pelo proprietário em 21/10/2026. Não executar os comandos deste roteiro agora. Concluir primeiro a validação local e a aprovação de uso.**
+
 Preparação em 21/10/2026. **Arquivos preparados localmente; instalação não executada na VPS.** Continuamos na Etapa 7.
 
 ## Ambiente observado
