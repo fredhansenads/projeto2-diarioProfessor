@@ -1,4 +1,4 @@
 {% extends "registration/auth_base.html" %}
 {% block title %}Criar conta · Diário do Professor{% endblock %}
-{% block auth_content %}<p class="eyebrow">SEU NOVO COMEÇO</p><h2>Crie seu espaço.</h2><p class="muted">Uma conta para organizar suas escolas, turmas e alunos.</p><form method="post">{% csrf_token %}{% include "includes/form_fields.html" %}<button class="button primary full-width" type="submit">Criar minha conta →</button></form><p class="auth-link">Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>{% endblock %}
+{% block auth_content %}<p class="eyebrow">SEU NOVO COMEÇO</p><h2>Crie seu espaço.</h2><p class="muted">Crie sua conta de professor para organizar suas escolas, turmas e alunos. Seus registros ficam separados dos demais professores.</p><form method="post">{% csrf_token %}{% include "includes/form_fields.html" %}<button class="button primary full-width" type="submit">Criar minha conta →</button></form><p class="auth-link">Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>{% endblock %}
 

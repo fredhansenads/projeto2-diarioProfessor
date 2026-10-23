@@ -79,7 +79,7 @@ Cadernos são únicos por turma/disciplina/período e guardam regras configuráv
 
 ## Telas existentes
 
-1. Entrada e recuperação de senha; contas criadas pelo administrador em `/admin/`.
+1. Entrada, criação pública de conta de professor e recuperação de senha; administração de contas em `/admin/`.
 2. Visão geral com contagens reais, turmas e primeiros passos.
 3. Lista com busca e paginação para cada cadastro.
 4. Criação e edição com mensagens de validação.
@@ -100,7 +100,7 @@ A Etapa 6 adiciona manifesto, ícones e instalação como PWA, com instruções 
 
 ## Operação e implantação
 
-A Etapa 7 está autorizada e em andamento. Cadastro público desativado por padrão; a configuração de produção rejeita sua habilitação. Django Axes limita as tentativas por combinação de usuário e IP: cinco falhas causam bloqueio por 15 minutos. O IP vem de REMOTE_ADDR; somente um proxy explicitamente confiável pode normalizar os cabeçalhos no Waitress. Formulários continuam protegidos por CSRF, com páginas de erro sem detalhes internos.
+A Etapa 7 está autorizada e em andamento. Desde 23/10/2026, cadastro público habilitado por padrão por decisão do proprietário, com link na tela de login. O formulário permite somente nome, usuário, e-mail e senha; não concede privilégios administrativos. `PUBLIC_REGISTRATION_ENABLED=False` permite fechar novos cadastros sem impedir o acesso das contas existentes. Django Axes limita as tentativas por combinação de usuário e IP: cinco falhas causam bloqueio por 15 minutos. O IP vem de REMOTE_ADDR; somente um proxy explicitamente confiável pode normalizar os cabeçalhos no Waitress. Formulários continuam protegidos por CSRF, com páginas de erro sem detalhes internos.
 
 WhiteNoise entrega os arquivos estáticos coletados com nomes versionados em produção. `serve.py` inicia o Waitress em endereço local; a hospedagem deve oferecer um mecanismo de execução persistente e HTTPS. `/saude/` verifica a conexão com o banco sem expor detalhes. Verificações de implantação exigem PostgreSQL, SMTP configurado, domínio explícito e cadastro público fechado; não substituem testes reais de conectividade e certificado.
 

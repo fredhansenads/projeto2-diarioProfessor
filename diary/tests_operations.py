@@ -22,6 +22,7 @@ class SecurityTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="prof", password="SenhaFicticia!2026")
 
+    @override_settings(PUBLIC_REGISTRATION_ENABLED=False)
     def test_public_signup_get_and_post_closed_and_login_has_no_signup_link(self):
         for response in (self.client.get(reverse("register")), self.client.post(reverse("register"), {
             "username": "invasor", "password1": "SenhaFicticia!2026", "password2": "SenhaFicticia!2026"})):
@@ -144,7 +145,7 @@ class DeploymentChecksTests(SimpleTestCase):
     def test_complete_configuration_passes_but_does_not_claim_external_services_validated(self):
         self.assertEqual(production_configuration(None), [])
         with override_settings(PUBLIC_REGISTRATION_ENABLED=True):
-            self.assertEqual([item.id for item in production_configuration(None)], ["diary.E006"])
+            self.assertEqual(production_configuration(None), [])
 
 
 @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"])

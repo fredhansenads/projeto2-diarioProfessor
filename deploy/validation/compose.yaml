@@ -35,7 +35,7 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
       POSTGRES_SSLMODE: disable
-      PUBLIC_REGISTRATION_ENABLED: "False"
+      PUBLIC_REGISTRATION_ENABLED: "True"
       EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       EMAIL_HOST: localhost
       EMAIL_PORT: "1025"

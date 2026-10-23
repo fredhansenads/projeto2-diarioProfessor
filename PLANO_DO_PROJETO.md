@@ -21,7 +21,7 @@ Criar um sistema web e uma experiência de aplicativo para celular que ajudem o 
 - A Etapa 4 acrescenta cadernos, avaliações, entregas, notas e recuperação com regras configuráveis por turma/disciplina/período.
 - A Etapa 5 acrescenta relatórios de turma e aluno para conselho, com filtros, PDF, CSV e impressão.
 - A Etapa 6 acrescenta recursos de instalação como PWA e melhorias no celular; usuário confirmou Android/iPhone e internet obrigatória.
-- A Etapa 7 acrescenta contas somente pelo administrador, proteção de login, configuração de produção, backup/restauração e validação local com PostgreSQL. A disponibilização pública permanece pendente.
+- A Etapa 7 acrescenta proteção de login, configuração de produção, backup/restauração e validação local com PostgreSQL. Desde 23/10/2026, cada professor pode criar sua conta pela tela de login. A disponibilização pública permanece pendente.
 - Regra de continuidade do usuário: concluir uma etapa por vez, salvar no Git e enviar ao GitHub, e sempre perguntar antes de iniciar a seguinte.
 - Premissas adotadas para iniciar: Django, contas separadas, uso conectado e interface responsiva. Regras pedagógicas específicas continuam abertas.
 
@@ -219,11 +219,13 @@ Não incluir automaticamente na primeira versão:
 
 **Etapa atual:** Etapa 7 em andamento; preparação local validada, sem publicação.
 
-**Última entrega:** laboratório local Ubuntu/Python 3.12.3/PostgreSQL 16.15 com 120 alunos fictícios; ensaios de HTTPS/SMTP, recuperação de senha, restauração e desempenho aprovados. Demonstração em http://localhost:18080 e roteiro em docs/VALIDACAO_LOCAL.md, aguardando avaliação do professor. Contas administradas, proteção de login e guias operacionais já entregues.
+**Última melhoria (23/10/2026):** cadastro público habilitado, opção “Criar minha conta” no login, mantendo isolamento e contas sem privilégios administrativos. Aguardar a próxima melhoria solicitada.
+
+**Validação anterior:** laboratório local Ubuntu/Python 3.12.3/PostgreSQL 16.15 com 120 alunos fictícios; ensaios de HTTPS/SMTP, recuperação de senha, restauração e desempenho aprovados. Demonstração em http://localhost:18080 e roteiro em docs/VALIDACAO_LOCAL.md, aguardando avaliação do professor. Contas administradas, proteção de login e guias operacionais já entregues.
 
 **Próxima ação:** proprietário testar a demonstração seguindo docs/VALIDACAO_LOCAL.md; registrar dificuldades e ajustar os fluxos afetados. Preservar seu banco fictício de avaliação. Não preparar nem alterar a VPS enquanto a validação e a aprovação não forem concluídas.
 
-**Autorização:** Etapa 7 autorizada pelo usuário; orientação mais recente: testar primeiro, sem alterar a VPS. A preparação do servidor foi adiada expressamente. VPS existente na Locaweb escolhida e subdomínio mantido; contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
+**Autorização:** Etapa 7 autorizada pelo usuário; orientação mais recente: testar primeiro, sem alterar a VPS. A preparação do servidor foi adiada expressamente. VPS existente na Locaweb escolhida e subdomínio mantido. Em 23/10/2026, usuário autorizou cadastro público de professores pelo login, substituindo a regra de contas somente pelo administrador. Salvar no Git/GitHub e perguntar antes de outra etapa. Disponibilização pública não realizada; aprovação final continua pendente.
 **Implementação:** Python 3.14.7 no Windows e 3.12.3 no laboratório Ubuntu, Django 5.2.18, SQLite e PostgreSQL 18/16.15 validados localmente.
 **Testes da aplicação:** 150 testes Django aprovados por banco, repetidos em SQLite/PostgreSQL 16 com Python 3.12; 12 JavaScript aprovados. Recuperação por SMTP STARTTLS local, HTTPS com certificado verificado e restauração de 29 tabelas PostgreSQL 16 conferidos. Quatro clientes/72 consultas sem erro; p95 1,65 s e Waitress RSS observado 84,9 MiB. Login, painel e ficha em viewport de celular conferidos no navegador. São dados fictícios; não substituem capacidade na VPS, serviços externos e aparelhos reais. Evidências e limites em docs/VALIDACAO_LOCAL.md e docs/ETAPA7.md.
 
@@ -247,6 +249,7 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Proprietário informou Ubuntu, 1 GB RAM, 2 vCPUs, disco de 40 GB e outro sistema Python em uso; consulta somente leitura preparada | Sintaxe Bash conferida; recursos livres e funcionamento na VPS ainda não verificados | Obter acesso identificado ou saída da consulta antes de definir a instalação |
 | 21/10/2026 | Inventário recebido: Ubuntu 24.04.4, Python 3.12.3, PostgreSQL 16.15, Nginx/Certbot e dois sistemas em uso; modelos de implantação isolada preparados | Metadados permitem Python 3.12; configuração Waitress e 15 testes operacionais locais conferidos. Binários Linux, carga e implantação pendentes | Executar somente o primeiro bloco de docs/VPS_UBUNTU.md pelo terminal do proprietário |
 | 21/10/2026 | Proprietário adiou a VPS; validação local ampliada e demonstração fictícia entregues | Python 3.12/PostgreSQL 16, 150 testes por banco, 12 PWA, HTTPS/SMTP locais, recuperação, 29 tabelas restauradas e 72 consultas simultâneas aprovados | Professor avaliar localhost:18080 conforme docs/VALIDACAO_LOCAL.md; VPS permanece adiada |
+| 23/10/2026 | Cadastro público habilitado por solicitação do proprietário; modelos de ambiente, verificações e documentação alinhados | 153 testes aprovados em SQLite e PostgreSQL 16; check de produção aprovado; link e formulário conferidos no navegador; sem migração ou alteração na VPS | Avaliar a melhoria e informar a próxima mudança |
 
 ### Decisões aprovadas
 
@@ -263,5 +266,6 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Executar a Etapa 7; contas somente pelo administrador; Locaweb Hospedagem Compartilhada Linux GO e diarioprofessor.santustech.com.br | “pode iniciar etapa 7” e respostas às perguntas de implantação |
 | 21/10/2026 | Implantar na VPS já existente na Locaweb, mantendo o subdomínio e Python/Django | Escolha explícita do usuário após informar que o GO não suporta Python/Django |
 | 21/10/2026 | Validar e testar localmente antes de qualquer preparação da VPS | Usuário pediu subir somente quando pronto/testado e respondeu “pode” à validação sem alterar a VPS |
+| 23/10/2026 | Permitir que cada professor crie sua conta pela tela de login; substitui a restrição anterior ao administrador | Solicitação explícita de mudança e melhoria do usuário |
 
 Django, SQLite local, PostgreSQL e contas isoladas foram adotados como decisões de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md, docs/ETAPA6.md e docs/ETAPA7.md.

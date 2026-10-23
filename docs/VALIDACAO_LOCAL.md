@@ -2,6 +2,10 @@
 
 Data: **21/10/2026**. Resultado: **verificações locais aprovadas; aguardando avaliação do proprietário**. A Etapa 7 continua aberta. Nenhum comando desta rodada foi executado na VPS.
 
+## Atualização de 23/10/2026
+
+Cadastro público habilitado a pedido do proprietário. Na tela de login, **Criar minha conta** abre o formulário de nome, usuário, e-mail e senha; a nova conta entra em um diário próprio vazio, sem acesso administrativo. Os resultados abaixo documentam o ensaio de 21/10, quando o cadastro ainda estava fechado. Não é necessário apagar ou recriar o banco para aplicar esta melhoria.
+
 ## Abrir a demonstração
 
 Com o laboratório em execução, abra **http://localhost:18080** neste computador.
@@ -102,3 +106,7 @@ Os logs e evidências desta máquina ficam em `tmp/validation-results/` (fora do
 5. Autorizar a disponibilização após os testes do ambiente definitivo. Nenhum teste local comprova sozinho o funcionamento dos serviços externos.
 
 A preparação da VPS permanece adiada conforme solicitado. Este laboratório é uma ferramenta local de validação, não uma proposta para instalar Docker na VPS.
+
+## Verificação da melhoria de cadastro — 23/10/2026
+
+153 testes aprovados em SQLite e PostgreSQL 16/Python 3.12, incluindo cadastro com CSRF, login automático, rejeição de usuário duplicado e senhas divergentes, isolamento e recusa de privilégios enviados no formulário. `check --deploy --fail-level WARNING` aprovado no laboratório (dois avisos HSTS já documentados). Login e formulário conferidos no navegador. A demonstração foi atualizada preservando o banco; nenhuma migração necessária. A tentativa inicial de testes no Windows encontrou restrições de permissão na pasta temporária do sandbox; as suítes completas foram concluídas no laboratório Linux.

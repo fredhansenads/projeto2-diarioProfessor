@@ -107,7 +107,7 @@ def main():
         report['postgresql'] = cursor.fetchone()[0]
     report['fixture'] = data = seed()
     (RESULTS / 'fixture.json').write_text(json.dumps(data, indent=2))
-    report['checks'] += ['150 Django tests SQLite', '150 Django tests PostgreSQL 16', 'dependencies', 'migration-drift']
+    report['checks'] += ['Django suite SQLite', 'Django suite PostgreSQL 16', 'dependencies', 'migration-drift']
     # A public-domain-shaped Host is used solely for the deployment settings check.
     command(['python', 'manage.py', 'check', '--deploy', '--fail-level', 'WARNING'], 'deployment-check',
             {**os.environ, 'DJANGO_ALLOWED_HOSTS': 'validation.example.test'})
@@ -175,12 +175,13 @@ http {{
         status, _, headers, _ = browser.request('/conta/login/')
         assert status == 200 and 'max-age=3600' in headers['Strict-Transport-Security']
         assert all(cookie.secure for cookie in browser.jar if cookie.name == 'csrftoken')
-        assert browser.request('/criar-conta/')[0] == 403
+        signup = browser.request('/criar-conta/')
+        assert signup[0] == 200 and b'Criar minha conta' in signup[1]
         assert browser.request('/conta/login/', {'username': 'x'})[0] == 403
         browser.login()
         assert any(cookie.name == 'sessionid' and cookie.secure for cookie in browser.jar)
         assert '/admin/login/' in browser.request('/admin/')[3]
-        report['checks'] += ['real HTTPS with verified local certificate', 'secure cookies', 'CSRF', 'registration closed', 'admin isolation']
+        report['checks'] += ['real HTTPS with verified local certificate', 'secure cookies', 'CSRF', 'public registration available', 'admin isolation']
         roster = list(Enrollment.objects.filter(classroom_id=data['classroom']).order_by('pk'))
         grades = {f'{field}_{pupil.pk}': value for pupil in roster
                   for field, value in [('status', 'submitted'), ('score', '8,5'), ('note', '')]}

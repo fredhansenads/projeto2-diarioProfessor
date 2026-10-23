@@ -14,7 +14,7 @@ Na pasta do projeto, use o ambiente virtual já existente:
 .\.venv\Scripts\python.exe manage.py runserver 127.0.0.1:8000
 ```
 
-Crie o primeiro administrador com `python manage.py createsuperuser`, usando o Python do ambiente virtual. Abra **http://127.0.0.1:8000/admin/** para cadastrar as contas dos professores, sem permissões administrativas. Não há usuário ou senha padrão; o cadastro público está desativado.
+Na tela de login, clique em **Criar minha conta** e informe nome, usuário, e-mail e senha. O cadastro entra automaticamente no diário, sem privilégios administrativos. Não há usuário ou senha padrão. Para administrar contas, crie um superusuário com `python manage.py createsuperuser`.
 
 Para parar o servidor, use Ctrl+C no terminal. Não é necessário ativar o ambiente virtual para executar esses comandos.
 
@@ -22,7 +22,7 @@ Se o ambiente precisar ser recriado, use Python 3.14 e `python -m venv .venv` an
 
 ## Primeiro uso
 
-1. Entre com a conta de professor criada pelo administrador.
+1. Crie sua conta pela tela de login ou entre com uma conta existente.
 2. Cadastre uma escola e o ano letivo.
 3. Cadastre os períodos de cada escola, com suas datas.
 4. Cadastre as disciplinas.
@@ -73,7 +73,7 @@ Para envio real, configure `EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBa
 
 ### Administração
 
-Somente o administrador cria contas nesta versão. Para criar o primeiro administrador:
+Professores podem criar suas próprias contas pela tela de login. O administrador também pode gerenciar contas em `/admin/`. Para criar o primeiro administrador:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py createsuperuser
@@ -91,7 +91,7 @@ Acesse `/admin/`. Ao criar professores, mantenha desmarcados os privilégios de 
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-A suíte atual contém 150 testes Django, aprovados em SQLite e PostgreSQL 18 local e repetidos com sucesso em Ubuntu/Python 3.12.3 com SQLite e PostgreSQL 16.15: autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações, instalação, segurança e recuperação. Também passaram os 12 testes JavaScript da PWA. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
+A suíte atual contém 153 testes Django, aprovados em 23/10/2026 em Ubuntu/Python 3.12.3 com SQLite e PostgreSQL 16.15 (a suíte anterior de 150 também foi validada em PostgreSQL 18): autenticação, cadastros, aulas/frequência, avaliações/notas, cálculos, isolamento, auditoria, relatórios/exportações, instalação, segurança e recuperação. Também passaram os 12 testes JavaScript da PWA. Para estes últimos, use Node 24 e execute `node --test tests/pwa.test.cjs`; Node é necessário apenas para esses testes, não para executar o sistema.
 
 Também foram verificados no navegador a criação de uma aula, o preenchimento de faltas parciais com justificativa, o atalho que marca somente pendências como presença e a consulta por período. A chamada foi preenchida e salva em janela de 390 × 844 pixels; essa simulação não substitui testes em aparelhos reais.
 
@@ -133,6 +133,8 @@ Ao concluir cada etapa, atualizar os documentos, validar, fazer commit e enviar 
 **Prioridade atual: avaliar a demonstração local antes de preparar a VPS.** O laboratório com 120 alunos fictícios abre em http://localhost:18080 enquanto estiver ativo. Contas de teste, resultados, comandos de retomada e roteiro de avaliação estão em [docs/VALIDACAO_LOCAL.md](docs/VALIDACAO_LOCAL.md). HTTPS/SMTP locais, recuperação de senha, restauração de 29 tabelas e 72 consultas com quatro clientes simultâneos passaram. A avaliação do professor e os aparelhos físicos continuam pendentes.
 
 O usuário escolheu sua **VPS existente na Locaweb**, mantendo o subdomínio `diarioprofessor.santustech.com.br`, após informar que a hospedagem compartilhada Linux GO não suporta Python/Django. A VPS tem Ubuntu 24.04.4, 1 GB RAM, 2 vCPUs e disco de 40 GB, com Flask e Node em uso. Foram medidos 307 MiB RAM disponíveis. Os modelos de serviço e proxy isolados estão preparados; instalação, testes nessa VPS e capacidade conjunta continuam pendentes. **Não executar sua preparação antes da avaliação local e autorização.** Os guias [docs/VPS_UBUNTU.md](docs/VPS_UBUNTU.md) e [docs/IMPLANTACAO_LOCAWEB.md](docs/IMPLANTACAO_LOCAWEB.md) ficam reservados para essa retomada futura.
+
+Desde 23/10/2026, o cadastro público está habilitado por padrão e nos modelos de ambiente, conforme nova decisão do proprietário. Para fechar temporariamente o cadastro, configure `PUBLIC_REGISTRATION_ENABLED=False` e reinicie o serviço. Em instalações antigas com essa variável desativada, altere para `True` para mostrar o link. O e-mail é informado para recuperação de senha; não há confirmação de e-mail antes do primeiro acesso.
 
 O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servidor Waitress. Foram validados localmente PostgreSQL 18, migrações, backup/restauração, contas criadas pelo administrador, bloqueio após tentativas repetidas e um ciclo pedagógico completo. As verificações de configuração de produção passaram; isso não comprova o funcionamento de HTTPS ou SMTP externos. Antes de disponibilizar o sistema, será necessário:
 
