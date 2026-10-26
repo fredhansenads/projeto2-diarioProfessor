@@ -219,7 +219,7 @@ Não incluir automaticamente na primeira versão:
 
 **Etapa atual:** Etapa 7 em andamento; preparação local validada, sem publicação.
 
-**Última melhoria (23/10/2026):** cadastro público habilitado, opção “Criar minha conta” no login, mantendo isolamento e contas sem privilégios administrativos. Aguardar a próxima melhoria solicitada.
+**Última melhoria (26/10/2026):** demonstração acessível pelo IP privado do computador para teste no navegador do celular na mesma rede Wi-Fi. Roteiro em docs/ACESSO_CELULAR_LOCAL.md. Login, CSS e relatório verificados pelo endereço Wi-Fi a partir do computador; confirmação no celular físico pendente. Cadastro público habilitado em 23/10 permanece disponível.
 
 **Validação anterior:** laboratório local Ubuntu/Python 3.12.3/PostgreSQL 16.15 com 120 alunos fictícios; ensaios de HTTPS/SMTP, recuperação de senha, restauração e desempenho aprovados. Demonstração em http://localhost:18080 e roteiro em docs/VALIDACAO_LOCAL.md, aguardando avaliação do professor. Contas administradas, proteção de login e guias operacionais já entregues.
 
@@ -250,6 +250,7 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Inventário recebido: Ubuntu 24.04.4, Python 3.12.3, PostgreSQL 16.15, Nginx/Certbot e dois sistemas em uso; modelos de implantação isolada preparados | Metadados permitem Python 3.12; configuração Waitress e 15 testes operacionais locais conferidos. Binários Linux, carga e implantação pendentes | Executar somente o primeiro bloco de docs/VPS_UBUNTU.md pelo terminal do proprietário |
 | 21/10/2026 | Proprietário adiou a VPS; validação local ampliada e demonstração fictícia entregues | Python 3.12/PostgreSQL 16, 150 testes por banco, 12 PWA, HTTPS/SMTP locais, recuperação, 29 tabelas restauradas e 72 consultas simultâneas aprovados | Professor avaliar localhost:18080 conforme docs/VALIDACAO_LOCAL.md; VPS permanece adiada |
 | 23/10/2026 | Cadastro público habilitado por solicitação do proprietário; modelos de ambiente, verificações e documentação alinhados | 153 testes aprovados em SQLite e PostgreSQL 16; check de produção aprovado; link e formulário conferidos no navegador; sem migração ou alteração na VPS | Avaliar a melhoria e informar a próxima mudança |
+| 26/10/2026 | Acesso de demonstração pelo celular na mesma rede autorizado; composição LAN opcional com IP privado e sem DEBUG | Login com CSRF/Origin, CSS, painel, relatório e recusa de Host indevido conferidos pelo IP Wi-Fi no computador; banco preservado, nenhuma regra de firewall alterada | Proprietário confirmar abertura pelo celular; instalação PWA/HTTPS e VPS continuam pendentes |
 
 ### Decisões aprovadas
 
@@ -267,5 +268,6 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Implantar na VPS já existente na Locaweb, mantendo o subdomínio e Python/Django | Escolha explícita do usuário após informar que o GO não suporta Python/Django |
 | 21/10/2026 | Validar e testar localmente antes de qualquer preparação da VPS | Usuário pediu subir somente quando pronto/testado e respondeu “pode” à validação sem alterar a VPS |
 | 23/10/2026 | Permitir que cada professor crie sua conta pela tela de login; substitui a restrição anterior ao administrador | Solicitação explícita de mudança e melhoria do usuário |
+| 26/10/2026 | Configurar demonstração para acesso pelo navegador do celular na mesma rede local | Usuário solicitou acesso pelo celular e confirmou que ambos estão na mesma rede |
 
 Django, SQLite local, PostgreSQL e contas isoladas foram adotados como decisões de implementação. O uso conectado foi confirmado pelo usuário e os recursos PWA implementados na Etapa 6. Detalhes e limitações estão em docs/ARQUITETURA.md, docs/ETAPA6.md e docs/ETAPA7.md.

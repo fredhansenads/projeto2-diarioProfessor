@@ -1,0 +1,7 @@
+# Optional local Wi-Fi access; preserve the loopback mapping from compose.yaml.
+services:
+  lab:
+    environment:
+      VALIDATION_LAN_IP: "${VALIDATION_LAN_IP:?Informe o IPv4 privado deste computador}"
+    ports:
+      - "${VALIDATION_LAN_IP}:18080:18080"

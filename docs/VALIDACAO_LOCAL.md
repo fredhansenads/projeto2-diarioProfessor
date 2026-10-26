@@ -18,7 +18,7 @@ Com o laboratório em execução, abra **http://localhost:18080** neste computad
 
 Este ambiente contém apenas dados inventados: uma escola, três turmas de 40 alunos, duas disciplinas por turma, 72 encontros de duas aulas, 960 notas e 2.880 registros de chamada. Use somente dados fictícios na demonstração. O banco real `db.sqlite3`, seu `.env`, contas e backups não foram copiados para o laboratório nem alterados nesta rodada.
 
-A demonstração usa HTTP local e DEBUG ativado, com acesso publicado exclusivamente em `127.0.0.1`. Não é uma configuração de produção nem um endereço acessível pelos celulares. O envio de e-mail fica desabilitado na demonstração; o ensaio automatizado de recuperação de senha foi feito separadamente com SMTP local e STARTTLS.
+A demonstração padrão usa HTTP local e DEBUG ativado, com acesso publicado em `127.0.0.1`. Desde 26/10/2026, há um modo opcional para celular na mesma rede Wi-Fi, com IP privado explícito e DEBUG desativado, conforme [ACESSO_CELULAR_LOCAL.md](ACESSO_CELULAR_LOCAL.md). Não é uma configuração de produção. O envio de e-mail fica desabilitado na demonstração; o ensaio automatizado de recuperação de senha foi feito separadamente com SMTP local e STARTTLS.
 
 ## O que foi comprovado
 

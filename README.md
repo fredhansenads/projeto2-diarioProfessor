@@ -148,7 +148,7 @@ O arquivo `requirements-production.txt` acrescenta o driver PostgreSQL e o servi
 
 A Etapa 7 continua em andamento. Resultados e limites estão em [docs/ETAPA7.md](docs/ETAPA7.md); backup, restauração e atualização estão em [docs/OPERACAO.md](docs/OPERACAO.md).
 
-O servidor `runserver` usado acima serve ao desenvolvimento local. O endereço `127.0.0.1` só abre neste computador; acesso pelo celular físico dependerá de configuração de rede ou hospedagem.
+O servidor `runserver` usado acima serve ao desenvolvimento local. O endereço `127.0.0.1` só abre neste computador. Para testar a demonstração pelo navegador do celular na mesma rede Wi-Fi, siga [docs/ACESSO_CELULAR_LOCAL.md](docs/ACESSO_CELULAR_LOCAL.md). A instalação PWA no celular continua dependendo de HTTPS.
 
 Referências técnicas: [Django 5.2](https://docs.djangoproject.com/en/5.2/releases/5.2/) e [checklist de implantação](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/).
 
