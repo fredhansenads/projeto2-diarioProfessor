@@ -46,4 +46,4 @@ docker compose -f deploy/validation/compose.yaml exec -d lab python -m tools.val
 
 ## Verificação realizada
 
-Pelo IP Wi-Fi, a partir do próprio computador, foram conferidos: página de login HTTP 200, CSS, login com CSRF e Origin, painel autenticado, relatório e recusa de Host não autorizado. O banco de demonstração foi preservado. O acesso a partir de um celular físico ainda precisa ser confirmado pelo proprietário; a verificação no computador não comprova comunicação entre dispositivos nem ausência de isolamento no roteador.
+Pelo IP Wi-Fi, a partir do próprio computador, foram conferidos: página de login HTTP 200, CSS, login com CSRF e Origin, painel autenticado, relatório e recusa de Host não autorizado. O banco de demonstração foi preservado. Em 26/10/2026, o proprietário confirmou que a tela de login abriu no celular conectado à mesma rede Wi-Fi. Essa confirmação valida a abertura da página no aparelho; autenticação, chamada, notas, relatórios e instalação PWA no celular ainda precisam de avaliação. O sistema operacional e o navegador do aparelho não foram informados.

@@ -219,7 +219,7 @@ Não incluir automaticamente na primeira versão:
 
 **Etapa atual:** Etapa 7 em andamento; preparação local validada, sem publicação.
 
-**Última melhoria (26/10/2026):** demonstração acessível pelo IP privado do computador para teste no navegador do celular na mesma rede Wi-Fi. Roteiro em docs/ACESSO_CELULAR_LOCAL.md. Login, CSS e relatório verificados pelo endereço Wi-Fi a partir do computador; confirmação no celular físico pendente. Cadastro público habilitado em 23/10 permanece disponível.
+**Última melhoria (26/10/2026):** demonstração acessível pelo IP privado do computador para teste no navegador do celular na mesma rede Wi-Fi. Roteiro em docs/ACESSO_CELULAR_LOCAL.md. Login, CSS e relatório verificados pelo endereço Wi-Fi a partir do computador; abertura da tela de login no celular físico confirmada pelo proprietário; fluxos autenticados no aparelho ainda pendentes. Cadastro público habilitado em 23/10 permanece disponível.
 
 **Validação anterior:** laboratório local Ubuntu/Python 3.12.3/PostgreSQL 16.15 com 120 alunos fictícios; ensaios de HTTPS/SMTP, recuperação de senha, restauração e desempenho aprovados. Demonstração em http://localhost:18080 e roteiro em docs/VALIDACAO_LOCAL.md, aguardando avaliação do professor. Contas administradas, proteção de login e guias operacionais já entregues.
 
@@ -250,7 +250,7 @@ Não incluir automaticamente na primeira versão:
 | 21/10/2026 | Inventário recebido: Ubuntu 24.04.4, Python 3.12.3, PostgreSQL 16.15, Nginx/Certbot e dois sistemas em uso; modelos de implantação isolada preparados | Metadados permitem Python 3.12; configuração Waitress e 15 testes operacionais locais conferidos. Binários Linux, carga e implantação pendentes | Executar somente o primeiro bloco de docs/VPS_UBUNTU.md pelo terminal do proprietário |
 | 21/10/2026 | Proprietário adiou a VPS; validação local ampliada e demonstração fictícia entregues | Python 3.12/PostgreSQL 16, 150 testes por banco, 12 PWA, HTTPS/SMTP locais, recuperação, 29 tabelas restauradas e 72 consultas simultâneas aprovados | Professor avaliar localhost:18080 conforme docs/VALIDACAO_LOCAL.md; VPS permanece adiada |
 | 23/10/2026 | Cadastro público habilitado por solicitação do proprietário; modelos de ambiente, verificações e documentação alinhados | 153 testes aprovados em SQLite e PostgreSQL 16; check de produção aprovado; link e formulário conferidos no navegador; sem migração ou alteração na VPS | Avaliar a melhoria e informar a próxima mudança |
-| 26/10/2026 | Acesso de demonstração pelo celular na mesma rede autorizado; composição LAN opcional com IP privado e sem DEBUG | Login com CSRF/Origin, CSS, painel, relatório e recusa de Host indevido conferidos pelo IP Wi-Fi no computador; banco preservado, nenhuma regra de firewall alterada | Proprietário confirmar abertura pelo celular; instalação PWA/HTTPS e VPS continuam pendentes |
+| 26/10/2026 | Acesso de demonstração pelo celular na mesma rede autorizado; composição LAN opcional com IP privado e sem DEBUG | Login com CSRF/Origin, CSS, painel, relatório e recusa de Host indevido conferidos pelo IP Wi-Fi no computador; banco preservado, nenhuma regra de firewall alterada | Abertura da tela de login no celular confirmada pelo proprietário; avaliar os fluxos autenticados; instalação PWA/HTTPS e VPS continuam pendentes |
 
 ### Decisões aprovadas
 
